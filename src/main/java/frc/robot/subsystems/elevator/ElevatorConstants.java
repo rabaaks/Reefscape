@@ -21,4 +21,9 @@ public class ElevatorConstants {
     public static final double s = 0.0;
     public static final double g = 0.0;
     public static final double v = 0.0;
+    public static final double a = 0.0;
+
+    public static final double maxProfileVelocity = 0.3;
+    public static final double maxProfileAcceleration = 0.3;
+
 }
