@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
@@ -53,10 +54,7 @@ public class RobotContainer {
         );
         elevator.setDefaultCommand(
             new RunCommand(
-                () -> {
-                    double change = controller.getRightTriggerAxis() - controller.getLeftTriggerAxis();
-                    elevator.setPosition(elevator.getPosition() + change);
-                },
+                () -> elevator.setPosition(controller.a().getAsBoolean() ? 1.4 : 0),
                 elevator
             )
         );

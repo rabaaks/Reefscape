@@ -2,6 +2,7 @@ package frc.robot.subsystems.elevator;
 
 import static frc.robot.subsystems.elevator.ElevatorConstants.*;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -23,15 +24,13 @@ public class ElevatorIOSim implements ElevatorIO {
     public void updateInputs(ElevatorIOInputs inputs) {
         double position = sim.getPositionMeters();
 
-        double voltage = feedforward + feedback.calculate(position);
+        double voltage = MathUtil.clamp(feedforward + feedback.calculate(position), -12.0, 12.0);
         sim.setInputVoltage(voltage);
         sim.update(0.02);
-
-        double current = sim.getCurrentDrawAmps();
-
+        
         inputs.position = position;
-        inputs.voltages = new double[] {voltage, voltage};
-        inputs.currents = new double[] {current, current};
+        inputs.voltages = new double[] {voltage};
+        inputs.currents = new double[] {sim.getCurrentDrawAmps()};
     }
 
     @Override
