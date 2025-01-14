@@ -21,13 +21,22 @@ public class ElevatorIOSim implements ElevatorIO {
     
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
-        double velocity = sim.getPositionMeters();
+        double position = sim.getPositionMeters();
 
-        double voltage = feedforward + feedback.calculate
-        sim.setInputVoltage()
+        double voltage = feedforward + feedback.calculate(position);
+        sim.setInputVoltage(voltage);
+        sim.update(0.02);
+
+        double current = sim.getCurrentDrawAmps();
+
+        inputs.position = position;
+        inputs.voltages = new double[] {voltage, voltage};
+        inputs.currents = new double[] {current, current};
     }
 
-    public void setPosition(double position) {
-
+    @Override
+    public void setPosition(double position, double ffVoltage) {
+        feedforward = ffVoltage;
+        feedback.setSetpoint(position);
     }
 }

@@ -53,11 +53,13 @@ public class ModuleIOSim implements ModuleIO {
         inputs.turnCurrent = turnSim.getCurrentDrawAmps();
     }
 
+    @Override
     public void setDriveVelocity(double velocity, double ffVoltage) {
         driveFeedforward = ffVoltage;
         driveFeedback.setSetpoint(velocity);
     }
 
+    @Override
     public void setTurnPosition(double position) {
         turnFeedback.setSetpoint(position);
     }

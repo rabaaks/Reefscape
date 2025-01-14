@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static frc.robot.Constants.*;
+import static frc.robot.subsystems.elevator.ElevatorConstants.startingHeight;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -15,9 +16,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
 
 public class RobotContainer {
     private final Drive drive;
+    private final Elevator elevator;
 
     private final CommandXboxController controller = new CommandXboxController(driverControllerPort);
 
@@ -29,6 +33,7 @@ public class RobotContainer {
             new ModuleIOSim(),
             new ModuleIOSim()
         );
+        elevator = new Elevator(new ElevatorIOSim());
 
         configureBindings();
     }
@@ -44,6 +49,15 @@ public class RobotContainer {
                     )
                 ),
                 drive
+            )
+        );
+        elevator.setDefaultCommand(
+            new RunCommand(
+                () -> {
+                    double change = controller.getRightTriggerAxis() - controller.getLeftTriggerAxis();
+                    elevator.setPosition(elevator.getPosition() + change);
+                },
+                elevator
             )
         );
     }
