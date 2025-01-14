@@ -27,7 +27,7 @@ public class ElevatorIOSim implements ElevatorIO {
         double voltage = MathUtil.clamp(feedforward + feedback.calculate(position), -12.0, 12.0);
         sim.setInputVoltage(voltage);
         sim.update(0.02);
-        
+
         inputs.position = position;
         inputs.voltages = new double[] {voltage};
         inputs.currents = new double[] {sim.getCurrentDrawAmps()};

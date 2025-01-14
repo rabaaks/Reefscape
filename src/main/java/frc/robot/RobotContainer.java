@@ -54,7 +54,7 @@ public class RobotContainer {
         );
         elevator.setDefaultCommand(
             new RunCommand(
-                () -> elevator.setPosition(controller.a().getAsBoolean() ? 1.4 : 0),
+                () -> elevator.setPosition(controller.a().getAsBoolean() ? 1.2 : 0.2),
                 elevator
             )
         );
