@@ -22,14 +22,16 @@ public class Robot extends LoggedRobot {
         switch (Constants.currentMode) {
             case REAL:
                 // Logger.addDataReceiver(new WPILOGWriter());
-                Logger.addDataReceiver(new NT4Publisher());
+            default:
             case SIM:
                 Logger.addDataReceiver(new NT4Publisher());
+                break;
             case REPLAY:
                 // setUseTiming(false); // Run as fast as possible
                 // String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
                 // Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
                 // Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a new log
+                break;
         }
 
         Logger.start();

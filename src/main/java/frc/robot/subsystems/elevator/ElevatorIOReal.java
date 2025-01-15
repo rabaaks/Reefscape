@@ -2,19 +2,18 @@ package frc.robot.subsystems.elevator;
 
 import static frc.robot.subsystems.elevator.ElevatorConstants.*;
 
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
-
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 
 public class ElevatorIOReal implements ElevatorIO {
     private SparkMax leftMotor = new SparkMax(leftMotorId, MotorType.kBrushless);
@@ -46,7 +45,7 @@ public class ElevatorIOReal implements ElevatorIO {
     public void updateInputs(ElevatorIOInputs inputs) {
         inputs.position = encoder.getPosition();
         inputs.velocity = encoder.getVelocity();
-        inputs.voltages = new double[] {leftMotor.getBusVoltage(), rightMotor.getBusVoltage()};
+        inputs.voltages = new double[] {leftMotor.getAppliedOutput() * leftMotor.getBusVoltage() , rightMotor.getAppliedOutput() * rightMotor.getBusVoltage()};
         inputs.currents = new double[] {leftMotor.getOutputCurrent(), rightMotor.getOutputCurrent()};
     }
 

@@ -16,8 +16,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 
 public class RobotContainer {
@@ -27,14 +29,30 @@ public class RobotContainer {
     private final CommandXboxController controller = new CommandXboxController(driverControllerPort);
 
     public RobotContainer() {
-        drive = new Drive(
-            new GyroIO() {},
-            new ModuleIOSim(),
-            new ModuleIOSim(),
-            new ModuleIOSim(),
-            new ModuleIOSim()
-        );
-        elevator = new Elevator(new ElevatorIOSim());
+        switch (currentMode) {
+            case REAL:
+                drive = new Drive(
+                    new GyroIO() {},
+                    new ModuleIO() {},
+                    new ModuleIO() {},
+                    new ModuleIO() {},
+                    new ModuleIO() {}
+                );
+                elevator = new Elevator(new ElevatorIOReal());
+                break;
+            default:
+            case SIM:
+            case REPLAY:
+                drive = new Drive(
+                    new GyroIO() {},
+                    new ModuleIOSim(),
+                    new ModuleIOSim(),
+                    new ModuleIOSim(),
+                    new ModuleIOSim()
+                );
+                elevator = new Elevator(new ElevatorIOSim());
+                break;
+        }
 
         configureBindings();
     }
