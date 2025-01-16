@@ -12,8 +12,10 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.ModuleIO;
@@ -70,12 +72,15 @@ public class RobotContainer {
                 drive
             )
         );
-        elevator.setDefaultCommand(
-            new RunCommand(
-                () -> elevator.setPosition(controller.a().getAsBoolean() ? 1.2 : 0.2),
-                elevator
-            )
-        );
+
+        // elevator.setDefaultCommand(
+        //     new RunCommand(
+        //         () -> elevator.setPosition(controller.povDown().getAsBoolean() ? 1.2 : (controller.povLeft().getAsBoolean() ? 0.9 : (controller.povUp().getAsBoolean() ? 0.6 : (controller.povLeft().getAsBoolean() ? 0.3 : 0.0)))),
+        //         elevator
+        //     )
+        // );
+
+        controller.a().whileTrue(elevator.sysIdRoutine());
     }
 
     public Command getAutonomousCommand() {

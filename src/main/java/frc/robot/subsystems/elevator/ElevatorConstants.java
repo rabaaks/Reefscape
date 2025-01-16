@@ -35,4 +35,7 @@ public class ElevatorConstants {
 
     public static final double positionConversionFactor = gearing * 2.0 * Math.PI * radius;
     public static final double velocityConversionFactor = positionConversionFactor / 60.0;
+
+    public static final double sysIdMinPosition = 0.2;
+    public static final double sysIdMaxPosition = 1.2;
 }

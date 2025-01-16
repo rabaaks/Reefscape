@@ -7,7 +7,16 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 public class Elevator extends SubsystemBase {
     private final ElevatorIO io;
@@ -19,8 +28,28 @@ public class Elevator extends SubsystemBase {
 
     private final ElevatorFeedforward feedforward = new ElevatorFeedforward(s, g, v, a);
 
+    private final SysIdRoutine routine;
+
     public Elevator(ElevatorIO io) {
         this.io = io;
+
+        routine = new SysIdRoutine(
+        new SysIdRoutine.Config(
+            Velocity.ofRelativeUnits(0.5, Units.Volts.per(Units.Seconds)), 
+            Voltage.ofRelativeUnits(7.0, Units.Volts), 
+            Time.ofRelativeUnits(10.0, Units.Seconds)
+        ), 
+        new SysIdRoutine.Mechanism(
+            voltage -> io.setPosition(0, voltage.magnitude()),
+            log -> {
+                log.motor("elevator")
+                    .voltage(Voltage.ofRelativeUnits(inputs.voltages[0], Units.Volts))
+                    .linearPosition(Distance.ofRelativeUnits(inputs.position, Units.Meters))
+                    .linearVelocity(LinearVelocity.ofRelativeUnits(inputs.velocity, Units.MetersPerSecond));
+            },
+            this
+        )
+    );
     }
 
     @Override
@@ -45,5 +74,14 @@ public class Elevator extends SubsystemBase {
     @AutoLogOutput(key="Odometry/ElevatorVelocity")
     public double getVelocity() {
         return inputs.velocity;
+    }
+
+    public Command sysIdRoutine() {
+        return Commands.sequence(
+            routine.quasistatic(SysIdRoutine.Direction.kForward).until(() -> inputs.position > sysIdMaxPosition),
+            routine.quasistatic(SysIdRoutine.Direction.kReverse).until(() -> inputs.position < sysIdMinPosition),
+            routine.dynamic(SysIdRoutine.Direction.kForward).until(() -> inputs.position > sysIdMaxPosition),
+            routine.dynamic(SysIdRoutine.Direction.kReverse).until(() -> inputs.position < sysIdMinPosition)
+        );
     }
 }
