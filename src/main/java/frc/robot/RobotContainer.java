@@ -45,7 +45,7 @@ public class RobotContainer {
                 drive = new Drive(
                     new GyroIO() {},
                     new ModuleIOReal(frontLeftDriveId, frontLeftTurnId),
-                    new ModuleIOReal(frontRightDriveId, frontRightDriveId),
+                    new ModuleIOReal(frontRightDriveId, frontRightTurnId),
                     new ModuleIOReal(backLeftDriveId, backLeftTurnId),
                     new ModuleIOReal(backRightDriveId, backRightTurnId)
                 );
@@ -73,9 +73,9 @@ public class RobotContainer {
             new RunCommand(
                 () -> drive.setSpeeds(
                     new ChassisSpeeds(
-                        MathUtil.applyDeadband(-controller.getLeftY(), 0.1) * speed, 
-                        MathUtil.applyDeadband(-controller.getLeftX(), 0.1) * speed, 
-                        MathUtil.applyDeadband(-controller.getRightX(), 0.1) * speed
+                        MathUtil.applyDeadband(-controller.getLeftY(), 0.1) * maxSpeed, 
+                        MathUtil.applyDeadband(-controller.getLeftX(), 0.1) * maxSpeed, 
+                        MathUtil.applyDeadband(-controller.getRightX(), 0.1) * maxSpeed
                     )
                 ),
                 drive
@@ -84,7 +84,7 @@ public class RobotContainer {
 
         elevator.setDefaultCommand(
             new RunCommand(
-                () -> elevator.setPosition(controller.povDown().getAsBoolean() ? 1.2 : (controller.povLeft().getAsBoolean() ? 0.9 : (controller.povUp().getAsBoolean() ? 0.6 : (controller.povRight().getAsBoolean() ? 0.3 : 0.0)))),
+                () -> elevator.setPosition(controller.povDown().getAsBoolean() ? 1.3 : (controller.povLeft().getAsBoolean() ? 0.9 : (controller.povUp().getAsBoolean() ? 0.6 : (controller.povRight().getAsBoolean() ? 0.3 : 0.0)))),
                 elevator
             )
         );

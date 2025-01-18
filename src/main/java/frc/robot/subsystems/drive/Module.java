@@ -27,7 +27,7 @@ public class Module {
 
     public SwerveModuleState getState() {
         return new SwerveModuleState(
-            inputs.driveVelocity * wheelRadius, 
+            inputs.driveVelocity, 
             new Rotation2d(inputs.turnPosition)
         );
     }

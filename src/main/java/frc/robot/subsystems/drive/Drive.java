@@ -92,6 +92,16 @@ public class Drive extends SubsystemBase {
         return poseEstimator.getEstimatedPosition();
     }
 
+    @AutoLogOutput(key="Odometry/States")
+    public SwerveModuleState[] getStates() {
+        return new SwerveModuleState[] {
+            modules[0].getState(),
+            modules[1].getState(),
+            modules[2].getState(),
+            modules[3].getState()
+        };
+    }
+
     public SwerveModulePosition[] getPositions() {
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
         for (int i = 0; i < 4; i++) {

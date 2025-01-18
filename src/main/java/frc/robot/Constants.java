@@ -13,6 +13,4 @@ public class Constants {
         SIM,
         REPLAY
     }
-
-    public static final double speed = 4.0;
 }

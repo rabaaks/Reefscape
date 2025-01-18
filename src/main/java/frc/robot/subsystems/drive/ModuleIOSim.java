@@ -32,8 +32,8 @@ public class ModuleIOSim implements ModuleIO {
 
     @Override
     public void updateInputs(ModuleIOInputs inputs) {
-        double driveVelocity = driveSim.getAngularVelocityRadPerSec() * driveVelocityConversionFactor;
-        double turnPosition = turnSim.getAngularPositionRad() * turnPositionConversionFactor;
+        double driveVelocity = driveSim.getAngularVelocityRadPerSec() * wheelRadius;
+        double turnPosition = turnSim.getAngularPositionRad();
         double driveVoltage = driveFeedforward + driveFeedback.calculate(driveVelocity);
         double turnVoltage = turnFeedforward + turnFeedback.calculate(turnPosition);
 
@@ -44,8 +44,8 @@ public class ModuleIOSim implements ModuleIO {
         turnSim.update(0.02);
 
         inputs.driveVelocity = driveVelocity;
-        inputs.turnVelocity = turnSim.getAngularVelocityRadPerSec() * turnVelocityConversionFactor;
-        inputs.drivePosition = driveSim.getAngularPositionRad() * drivePositionConversionFactor; 
+        inputs.turnVelocity = turnSim.getAngularVelocityRadPerSec();
+        inputs.drivePosition = driveSim.getAngularPositionRad() * wheelRadius; 
         inputs.turnPosition = turnPosition;
 
         inputs.driveVoltage = driveVoltage;
