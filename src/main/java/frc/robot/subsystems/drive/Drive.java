@@ -43,16 +43,16 @@ public class Drive extends SubsystemBase {
 
     public Drive(GyroIO gyroIO, ModuleIO frontLeft, ModuleIO frontRight, ModuleIO backLeft, ModuleIO backRight) {
         this.gyroIO = gyroIO;
-        modules[0] = new Module(frontLeft, 0);
-        modules[1] = new Module(frontRight, 1);
-        modules[2] = new Module(backLeft, 2);
-        modules[3] = new Module(backRight, 3);
+        modules[0] = new Module(frontLeft);
+        modules[1] = new Module(frontRight);
+        modules[2] = new Module(backLeft);
+        modules[3] = new Module(backRight);
     }
 
     @Override
     public void periodic() {
-        for (Module module : modules) {
-            module.updateInputs();
+        for (int i = 0; i < 4; i++) {
+            modules[i].updateInputs(i);
         }
 
         gyroIO.updateInputs(gyroInputs);

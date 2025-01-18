@@ -24,6 +24,7 @@ public class ModuleIOSim implements ModuleIO {
     private double driveFeedforward = 0.0;
 
     private PIDController turnFeedback = new PIDController(turnP, turnI, turnD);
+    private double turnFeedforward = 0.0;
 
     public ModuleIOSim() {
         turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
@@ -31,10 +32,10 @@ public class ModuleIOSim implements ModuleIO {
 
     @Override
     public void updateInputs(ModuleIOInputs inputs) {
-        double driveVelocity = driveSim.getAngularVelocityRadPerSec();
+        double driveVelocity = driveSim.getAngularVelocityRadPerSec() * driveVelocityConversionFactor;
+        double turnPosition = turnSim.getAngularPositionRad() * turnPositionConversionFactor;
         double driveVoltage = driveFeedforward + driveFeedback.calculate(driveVelocity);
-        double turnPosition = turnSim.getAngularPositionRad();
-        double turnVoltage = turnFeedback.calculate(turnPosition);
+        double turnVoltage = turnFeedforward + turnFeedback.calculate(turnPosition);
 
         driveSim.setInputVoltage(MathUtil.clamp(driveVoltage, -12.0, 12.0));
         driveSim.update(0.02);
@@ -43,13 +44,13 @@ public class ModuleIOSim implements ModuleIO {
         turnSim.update(0.02);
 
         inputs.driveVelocity = driveVelocity;
-        inputs.drivePosition = driveSim.getAngularPositionRad();
-        inputs.turnVelocity = turnSim.getAngularVelocityRadPerSec(); 
+        inputs.turnVelocity = turnSim.getAngularVelocityRadPerSec() * turnVelocityConversionFactor;
+        inputs.drivePosition = driveSim.getAngularPositionRad() * drivePositionConversionFactor; 
         inputs.turnPosition = turnPosition;
 
         inputs.driveVoltage = driveVoltage;
-        inputs.driveCurrent = driveSim.getCurrentDrawAmps();
         inputs.turnVoltage = turnVoltage;
+        inputs.driveCurrent = driveSim.getCurrentDrawAmps();
         inputs.turnCurrent = turnSim.getCurrentDrawAmps();
     }
 
@@ -60,7 +61,8 @@ public class ModuleIOSim implements ModuleIO {
     }
 
     @Override
-    public void setTurnPosition(double position) {
+    public void setTurnPosition(double position, double ffVoltage) {
+        turnFeedforward = ffVoltage;
         turnFeedback.setSetpoint(position);
     }
 }

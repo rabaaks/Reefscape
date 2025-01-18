@@ -4,6 +4,7 @@ import static frc.robot.subsystems.elevator.ElevatorConstants.*;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -26,7 +27,7 @@ public class Elevator extends SubsystemBase {
     private TrapezoidProfile.State profileState = new TrapezoidProfile.State(0, 0);
     private TrapezoidProfile.State futureProfileState = new TrapezoidProfile.State(0, 0);
 
-    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(s, g, v, a);
+    private ElevatorFeedforward feedforward = new ElevatorFeedforward(s, g, v, a);
 
     private final SysIdRoutine routine;
 
@@ -35,9 +36,9 @@ public class Elevator extends SubsystemBase {
 
         routine = new SysIdRoutine(
         new SysIdRoutine.Config(
-            Velocity.ofRelativeUnits(0.5, Units.Volts.per(Units.Seconds)), 
-            Voltage.ofRelativeUnits(7.0, Units.Volts), 
-            Time.ofRelativeUnits(10.0, Units.Seconds)
+            Velocity.ofRelativeUnits(sysIdRampUp, Units.Volts.per(Units.Seconds)), 
+            Voltage.ofRelativeUnits(sysIdStep, Units.Volts), 
+            Time.ofRelativeUnits(sysIdTimeout, Units.Seconds)
         ), 
         new SysIdRoutine.Mechanism(
             voltage -> io.setPosition(0, voltage.magnitude()),
@@ -62,8 +63,12 @@ public class Elevator extends SubsystemBase {
         futureProfileState = profile.calculate(0.02, profileState, new TrapezoidProfile.State(position, 0.0));
         Logger.recordOutput("Elevator/PositionSetpoint", profileState.position);
         Logger.recordOutput("Elevator/VelocitySetpoint", profileState.velocity);
-        io.setPosition(position, feedforward.calculateWithVelocities(profileState.velocity, futureProfileState.velocity));
+        io.setPosition(profileState.position, feedforward.calculateWithVelocities(profileState.velocity, futureProfileState.velocity));
         profileState = futureProfileState;
+    }
+
+    public void reset() {
+        io.reset();
     }
 
     @AutoLogOutput(key="Odometry/ElevatorPosition")

@@ -1,0 +1,24 @@
+{
+  "NetworkTables": {
+    "transitory": {
+      "AdvantageKit": {
+        "NetworkInputs": {
+          "Elevator": {
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo"
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)"
+  }
+}

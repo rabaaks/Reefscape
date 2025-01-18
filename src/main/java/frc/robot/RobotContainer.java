@@ -5,7 +5,8 @@
 package frc.robot;
 
 import static frc.robot.Constants.*;
-import static frc.robot.subsystems.elevator.ElevatorConstants.startingHeight;
+import static frc.robot.subsystems.elevator.ElevatorConstants.*;
+import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.ModuleIO;
+import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
@@ -35,12 +37,12 @@ public class RobotContainer {
             case REAL:
                 drive = new Drive(
                     new GyroIO() {},
-                    new ModuleIO() {},
-                    new ModuleIO() {},
-                    new ModuleIO() {},
-                    new ModuleIO() {}
+                    new ModuleIOReal(frontLeftDriveId, frontLeftTurnId),
+                    new ModuleIOReal(frontRightDriveId, frontRightDriveId),
+                    new ModuleIOReal(backLeftDriveId, backLeftTurnId),
+                    new ModuleIOReal(backRightDriveId, backRightTurnId)
                 );
-                elevator = new Elevator(new ElevatorIOReal());
+                elevator = new Elevator(new ElevatorIOReal(leftMotorId, rightMotorId));
                 break;
             default:
             case SIM:
@@ -73,14 +75,18 @@ public class RobotContainer {
             )
         );
 
-        // elevator.setDefaultCommand(
-        //     new RunCommand(
-        //         () -> elevator.setPosition(controller.povDown().getAsBoolean() ? 1.2 : (controller.povLeft().getAsBoolean() ? 0.9 : (controller.povUp().getAsBoolean() ? 0.6 : (controller.povLeft().getAsBoolean() ? 0.3 : 0.0)))),
-        //         elevator
-        //     )
-        // );
+        elevator.setDefaultCommand(
+            new RunCommand(
+                () -> elevator.setPosition(controller.povDown().getAsBoolean() ? 1.2 : (controller.povLeft().getAsBoolean() ? 0.9 : (controller.povUp().getAsBoolean() ? 0.6 : (controller.povRight().getAsBoolean() ? 0.3 : 0.0)))),
+                elevator
+            )
+        );
 
-        controller.a().whileTrue(elevator.sysIdRoutine());
+        // controller.a().whileTrue(new RunCommand(() -> elevator.reset(), elevator));
+
+        // elevator.getCurrentCommand().cancel();
+ 
+        // controller.a().whileTrue(elevator.sysIdRoutine());
     }
 
     public Command getAutonomousCommand() {

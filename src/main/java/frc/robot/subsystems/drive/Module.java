@@ -13,16 +13,14 @@ public class Module {
     private final ModuleIO io;
     private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
 
-    private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(driveS, driveV);
+    private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(driveS, driveV, driveA);
+    private final SimpleMotorFeedforward turnFeedforward = new SimpleMotorFeedforward(turnS, turnV, turnA);
 
-    private final int index;
-
-    public Module(ModuleIO io, int index) {
+    public Module(ModuleIO io) {
         this.io = io;
-        this.index = index;
     }
 
-    public void updateInputs() {
+    public void updateInputs(int index) {
         io.updateInputs(inputs);
         Logger.processInputs("Drive/Module" + index, inputs);
     }
@@ -35,15 +33,13 @@ public class Module {
     }
 
     public void setState(SwerveModuleState state) {
-        double velocity = state.speedMetersPerSecond / wheelRadius;
-        io.setDriveVelocity(velocity, feedforward.calculate(velocity));
-
-        io.setTurnPosition(state.angle.getRadians());
+        io.setDriveVelocity(state.speedMetersPerSecond, driveFeedforward.calculate(state.speedMetersPerSecond));
+        io.setTurnPosition(state.angle.getRadians(), 0.0);
     }
 
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(
-            inputs.drivePosition * wheelRadius,
+            inputs.drivePosition,
             new Rotation2d(inputs.turnPosition)
         );
     }
