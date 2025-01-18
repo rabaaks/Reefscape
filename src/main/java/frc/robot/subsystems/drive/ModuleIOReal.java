@@ -20,11 +20,11 @@ public class ModuleIOReal implements ModuleIO {
     private SparkMax driveMotor;
     private SparkMax turnMotor;
 
-    private final RelativeEncoder driveEncoder = driveMotor.getEncoder();
-    private final RelativeEncoder turnEncoder = turnMotor.getEncoder();
+    private final RelativeEncoder driveEncoder;
+    private final RelativeEncoder turnEncoder;
 
-    private final SparkClosedLoopController driveFeedback = driveMotor.getClosedLoopController();
-    private final SparkClosedLoopController turnFeedback = turnMotor.getClosedLoopController();
+    private final SparkClosedLoopController driveFeedback;
+    private final SparkClosedLoopController turnFeedback;
 
     private double driveFeedforward = 0.0;
     private double turnFeedforward = 0.0;
@@ -32,6 +32,12 @@ public class ModuleIOReal implements ModuleIO {
     public ModuleIOReal(int driveId, int turnId) {
         driveMotor = new SparkMax(driveId, MotorType.kBrushless);
         turnMotor = new SparkMax(turnId, MotorType.kBrushless);
+
+        driveEncoder = driveMotor.getEncoder();
+        turnEncoder = turnMotor.getEncoder();
+
+        driveFeedback = driveMotor.getClosedLoopController();
+        turnFeedback = turnMotor.getClosedLoopController();
 
         SparkMaxConfig driveConfig = new SparkMaxConfig();
         SparkMaxConfig turnConfig = new SparkMaxConfig();

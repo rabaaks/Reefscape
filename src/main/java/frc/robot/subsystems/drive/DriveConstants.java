@@ -40,13 +40,13 @@ public class DriveConstants {
     public static final double turnPositionConversionFactor = turnGearing;
     public static final double turnVelocityConversionFactor = turnPositionConversionFactor / 60.0;
 
-    public static final int frontLeftDriveId = 0;
-    public static final int frontLeftTurnId =  0;
-    public static final int frontRightDriveId = 0;
-    public static final int frontRightTurnId = 0;
-    public static final int backLeftDriveId = 0;
-    public static final int backLeftTurnId = 0;
-    public static final int backRightDriveId = 0;
-    public static final int backRightTurnId = 0;
+    public static final int frontLeftDriveId = 1;
+    public static final int frontLeftTurnId =  2;
+    public static final int frontRightDriveId = 3;
+    public static final int frontRightTurnId = 4;
+    public static final int backLeftDriveId = 5;
+    public static final int backLeftTurnId = 6;
+    public static final int backRightDriveId = 7;
+    public static final int backRightTurnId = 8;
 
 }

@@ -21,8 +21,9 @@ public class ElevatorIOReal implements ElevatorIO {
     private SparkMax leftMotor;
     private SparkMax rightMotor;
 
-    private final RelativeEncoder encoder = leftMotor.getEncoder();
-    private final SparkClosedLoopController feedback = leftMotor.getClosedLoopController();
+    private final RelativeEncoder encoder;
+    private final SparkClosedLoopController feedback;
+
     private double feedforward = 0.0;
 
     private double rotations = 0;
@@ -31,6 +32,9 @@ public class ElevatorIOReal implements ElevatorIO {
     public ElevatorIOReal(int leftId, int rightId) {
         leftMotor = new SparkMax(leftId, MotorType.kBrushless);
         rightMotor = new SparkMax(rightId, MotorType.kBrushless);
+
+        encoder = leftMotor.getEncoder();
+        feedback = leftMotor.getClosedLoopController();
 
         SparkMaxConfig config = new SparkMaxConfig();
         config
