@@ -5,6 +5,7 @@ import static frc.robot.subsystems.drive.DriveConstants.*;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -19,9 +20,14 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drive extends SubsystemBase {
-    private final Module[] modules = new Module[4];
+    private final ModuleIO[] moduleIOs;
+    private final ModuleIOInputsAutoLogged[] moduleIOInputs = new ModuleIOInputsAutoLogged[4];
+
     private final GyroIO gyroIO;
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
+
+    private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(driveS, driveV, driveA);
+    // private final SimpleMotorFeedforward turnFeedforward = new SimpleMotorFeedforward(turnS, turnV, turnA);
 
     private Rotation2d rawGyroRotation = new Rotation2d();
     private SwerveModulePosition[] previousPositions = new SwerveModulePosition[] {
@@ -41,18 +47,16 @@ public class Drive extends SubsystemBase {
     );
     private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, new Rotation2d(), previousPositions, new Pose2d());
 
-    public Drive(GyroIO gyroIO, ModuleIO frontLeft, ModuleIO frontRight, ModuleIO backLeft, ModuleIO backRight) {
+    public Drive(GyroIO gyroIO, ModuleIO[] moduleIOs) {
         this.gyroIO = gyroIO;
-        modules[0] = new Module(frontLeft);
-        modules[1] = new Module(frontRight);
-        modules[2] = new Module(backLeft);
-        modules[3] = new Module(backRight);
+        this.moduleIOs = moduleIOs;
     }
 
     @Override
     public void periodic() {
         for (int i = 0; i < 4; i++) {
-            modules[i].updateInputs(i);
+            moduleIOs[i].updateInputs(moduleIOInputs[i]);
+            Logger.processInputs("Drive/Module" + i, moduleIOInputs[i]);
         }
 
         gyroIO.updateInputs(gyroInputs);
@@ -77,35 +81,54 @@ public class Drive extends SubsystemBase {
         poseEstimator.update(rawGyroRotation, positions);
     }
 
-    public void setSpeeds(ChassisSpeeds speeds) {
-        SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, maxSpeed);
-        Logger.recordOutput("Drive/StateSetpoints", states);
-
-        for (int i = 0; i < 4; i++) {
-            modules[i].setState(states[i]);
-        }
+    @AutoLogOutput(key="Drive/Speeds/Measured")
+    public ChassisSpeeds getSpeeds() {
+        return kinematics.toChassisSpeeds(getStates());
     }
 
-    @AutoLogOutput(key="Odometry/Robot")
+    public void setSpeeds(ChassisSpeeds speeds) {
+        Logger.recordOutput("Drive/Speeds/Setpoints", speeds);
+        SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, maxSpeed);
+
+        setStates(states);
+    }
+
+
+
+    @AutoLogOutput(key="Drive/Pose/Measured")
     public Pose2d getPose() {
         return poseEstimator.getEstimatedPosition();
     }
 
-    @AutoLogOutput(key="Odometry/States")
+    @AutoLogOutput(key="Drive/States/Measured")
     public SwerveModuleState[] getStates() {
-        return new SwerveModuleState[] {
-            modules[0].getState(),
-            modules[1].getState(),
-            modules[2].getState(),
-            modules[3].getState()
-        };
+        SwerveModuleState[] states = new SwerveModuleState[4];
+        for (int i = 0; i < 4; i++) {
+            states[i] = new SwerveModuleState(
+                moduleIOInputs[i].driveVelocity,
+                new Rotation2d(moduleIOInputs[i].turnPosition)
+            );
+        }
+        return states;
     }
 
+    public void setStates(SwerveModuleState[] states) {
+        Logger.recordOutput("Drive/States/Setpoints", states);
+        for (int i = 0; i < 4; i++) {
+            moduleIOs[i].setDriveVelocity(states[i].speedMetersPerSecond, driveFeedforward.calculate(states[i].speedMetersPerSecond));
+            moduleIOs[i].setTurnPosition(states[i].angle.getRadians(), 0.0);
+        }
+    }
+
+    @AutoLogOutput(key="Drive/Positions/Measured")
     public SwerveModulePosition[] getPositions() {
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
         for (int i = 0; i < 4; i++) {
-            positions[i] = modules[i].getPosition();
+            positions[i] = new SwerveModulePosition(
+                moduleIOInputs[i].drivePosition,
+                new Rotation2d(moduleIOInputs[i].turnPosition)
+            );
         }
         return positions;
     }

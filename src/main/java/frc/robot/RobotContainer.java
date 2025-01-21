@@ -44,10 +44,12 @@ public class RobotContainer {
                 // );
                 drive = new Drive(
                     new GyroIO() {},
-                    new ModuleIOReal(frontLeftDriveId, frontLeftTurnId),
-                    new ModuleIOReal(frontRightDriveId, frontRightTurnId),
-                    new ModuleIOReal(backLeftDriveId, backLeftTurnId),
-                    new ModuleIOReal(backRightDriveId, backRightTurnId)
+                    new ModuleIOReal[] {
+                        new ModuleIOReal(frontLeftDriveId, frontLeftTurnId),
+                        new ModuleIOReal(frontRightDriveId, frontRightTurnId),
+                        new ModuleIOReal(backLeftDriveId, backLeftTurnId),
+                        new ModuleIOReal(backRightDriveId, backRightTurnId)
+                    }
                 );
                 elevator = new Elevator(new ElevatorIOReal(leftMotorId, rightMotorId));
                 break;
@@ -56,10 +58,12 @@ public class RobotContainer {
             case REPLAY:
                 drive = new Drive(
                     new GyroIO() {},
-                    new ModuleIOSim(),
-                    new ModuleIOSim(),
-                    new ModuleIOSim(),
-                    new ModuleIOSim()
+                    new ModuleIOSim[] {
+                        new ModuleIOSim(),
+                        new ModuleIOSim(),
+                        new ModuleIOSim(),
+                        new ModuleIOSim()
+                    }
                 );
                 elevator = new Elevator(new ElevatorIOSim());
                 break;
