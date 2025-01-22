@@ -35,22 +35,22 @@ public class Elevator extends SubsystemBase {
         this.io = io;
 
         routine = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            Velocity.ofRelativeUnits(sysIdRampUp, Units.Volts.per(Units.Seconds)), 
-            Voltage.ofRelativeUnits(sysIdStep, Units.Volts), 
-            Time.ofRelativeUnits(sysIdTimeout, Units.Seconds)
-        ), 
-        new SysIdRoutine.Mechanism(
-            voltage -> io.setPosition(0, voltage.magnitude()),
-            log -> {
-                log.motor("elevator")
-                    .voltage(Voltage.ofRelativeUnits(inputs.voltages[0], Units.Volts))
-                    .linearPosition(Distance.ofRelativeUnits(inputs.position, Units.Meters))
-                    .linearVelocity(LinearVelocity.ofRelativeUnits(inputs.velocity, Units.MetersPerSecond));
-            },
-            this
-        )
-    );
+            new SysIdRoutine.Config(
+                Velocity.ofRelativeUnits(sysIdRampUp, Units.Volts.per(Units.Seconds)), 
+                Voltage.ofRelativeUnits(sysIdStep, Units.Volts), 
+                Time.ofRelativeUnits(sysIdTimeout, Units.Seconds)
+            ), 
+            new SysIdRoutine.Mechanism(
+                voltage -> io.setPosition(0, voltage.magnitude()),
+                log -> {
+                    log.motor("elevator")
+                        .voltage(Voltage.ofRelativeUnits(inputs.voltages[0], Units.Volts))
+                        .linearPosition(Distance.ofRelativeUnits(inputs.position, Units.Meters))
+                        .linearVelocity(LinearVelocity.ofRelativeUnits(inputs.velocity, Units.MetersPerSecond));
+                },
+                this
+            )
+        );
     }
 
     @Override

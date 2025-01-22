@@ -43,6 +43,7 @@ public class ModuleIOReal implements ModuleIO {
         SparkMaxConfig turnConfig = new SparkMaxConfig();
 
         driveConfig
+            .inverted(false)
             .smartCurrentLimit(40)
             .idleMode(IdleMode.kCoast);
         driveConfig.encoder
@@ -54,6 +55,7 @@ public class ModuleIOReal implements ModuleIO {
             .d(driveD);
 
         turnConfig
+            .inverted(true)
             .smartCurrentLimit(40)
             .idleMode(IdleMode.kCoast);
         turnConfig.encoder

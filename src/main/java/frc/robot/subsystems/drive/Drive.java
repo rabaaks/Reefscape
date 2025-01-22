@@ -2,8 +2,12 @@ package frc.robot.subsystems.drive;
 
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
+import java.util.Collections;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+
+import com.fasterxml.jackson.databind.Module;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.PoseEstimator;
@@ -17,11 +21,18 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 public class Drive extends SubsystemBase {
     private final ModuleIO[] moduleIOs;
-    private final ModuleIOInputsAutoLogged[] moduleIOInputs = new ModuleIOInputsAutoLogged[4];
+    private final ModuleIOInputsAutoLogged[] moduleIOInputs = {
+        new ModuleIOInputsAutoLogged(),
+        new ModuleIOInputsAutoLogged(),
+        new ModuleIOInputsAutoLogged(),
+        new ModuleIOInputsAutoLogged()
+    };
 
     private final GyroIO gyroIO;
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -41,8 +52,8 @@ public class Drive extends SubsystemBase {
         new Translation2d[] {
             new Translation2d(halfWidth, halfWidth),
             new Translation2d(halfWidth, -halfWidth),
-            new Translation2d(-halfWidth, -halfWidth),
-            new Translation2d(-halfWidth, halfWidth)
+            new Translation2d(-halfWidth, halfWidth),
+            new Translation2d(-halfWidth, -halfWidth)
         }
     );
     private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, new Rotation2d(), previousPositions, new Pose2d());
@@ -89,12 +100,14 @@ public class Drive extends SubsystemBase {
     public void setSpeeds(ChassisSpeeds speeds) {
         Logger.recordOutput("Drive/Speeds/Setpoints", speeds);
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, maxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, driveSpeed);
 
         setStates(states);
     }
 
-
+    public void setSpeedsFieldOriented(ChassisSpeeds speeds) {
+        setSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, rawGyroRotation));
+    }
 
     @AutoLogOutput(key="Drive/Pose/Measured")
     public Pose2d getPose() {

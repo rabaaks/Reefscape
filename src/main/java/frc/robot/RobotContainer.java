@@ -75,11 +75,11 @@ public class RobotContainer {
     private void configureBindings() {
         drive.setDefaultCommand(
             new RunCommand(
-                () -> drive.setSpeeds(
+                () -> drive.setSpeedsFieldOriented(
                     new ChassisSpeeds(
-                        MathUtil.applyDeadband(-controller.getLeftY(), 0.1) * maxSpeed, 
-                        MathUtil.applyDeadband(-controller.getLeftX(), 0.1) * maxSpeed, 
-                        MathUtil.applyDeadband(-controller.getRightX(), 0.1) * maxSpeed
+                        MathUtil.applyDeadband(-controller.getLeftY(), 0.1) * driveSpeed, 
+                        MathUtil.applyDeadband(-controller.getLeftX(), 0.1) * driveSpeed, 
+                        MathUtil.applyDeadband(-controller.getRightX(), 0.1) * turnSpeed
                     )
                 ),
                 drive
@@ -88,7 +88,7 @@ public class RobotContainer {
 
         elevator.setDefaultCommand(
             new RunCommand(
-                () -> elevator.setPosition(controller.povDown().getAsBoolean() ? 1.3 : (controller.povLeft().getAsBoolean() ? 0.9 : (controller.povUp().getAsBoolean() ? 0.6 : (controller.povRight().getAsBoolean() ? 0.3 : 0.0)))),
+                () -> elevator.setPosition(controller.povDown().getAsBoolean() ? 1.3 : (controller.povLeft().getAsBoolean() ? 1.0 : (controller.povUp().getAsBoolean() ? 0.6 : (controller.povRight().getAsBoolean() ? 0.3 : 0.0)))),
                 elevator
             )
         );

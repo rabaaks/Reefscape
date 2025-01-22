@@ -4,7 +4,8 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 public class DriveConstants {
-    public static final double maxSpeed = 1.0;
+    public static final double driveSpeed = 1.0;
+    public static final double turnSpeed = 2.0;
 
     public static final DCMotor driveMotor = DCMotor.getNEO(1);
     public static final DCMotor turnMotor = DCMotor.getNEO(1);
@@ -19,12 +20,12 @@ public class DriveConstants {
     public static final double driveI = 0.0;
     public static final double driveD = 0.0;
 
-    public static final double turnP = 2.0;
+    public static final double turnP = 1.2;
     public static final double turnI = 0.0;
     public static final double turnD = 0.0;
 
     public static final double driveS = 0.0;
-    public static final double driveV = 1.0 / maxSpeed;
+    public static final double driveV = 2.0;
     public static final double driveA = 0.0;
 
     public static final double turnS = 0.0;
