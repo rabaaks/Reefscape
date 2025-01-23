@@ -8,7 +8,7 @@ public interface GyroIO {
     @AutoLog
     public static class GyroIOInputs {
         public boolean connected = false;
-        public Rotation2d yawPosition = new Rotation2d();
+        public double yawPosition = 0.0;;
     }
 
     public default void updateInputs(GyroIOInputs inputs) {}

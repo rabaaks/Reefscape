@@ -2,12 +2,8 @@ package frc.robot.subsystems.drive;
 
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
-import java.util.Collections;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-
-import com.fasterxml.jackson.databind.Module;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.PoseEstimator;
@@ -26,19 +22,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 public class Drive extends SubsystemBase {
-    private final ModuleIO[] moduleIOs;
-    private final ModuleIOInputsAutoLogged[] moduleIOInputs = {
-        new ModuleIOInputsAutoLogged(),
-        new ModuleIOInputsAutoLogged(),
-        new ModuleIOInputsAutoLogged(),
-        new ModuleIOInputsAutoLogged()
-    };
+    private final Module[] modules;
 
     private final GyroIO gyroIO;
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
-
-    private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(driveS, driveV, driveA);
-    // private final SimpleMotorFeedforward turnFeedforward = new SimpleMotorFeedforward(turnS, turnV, turnA);
 
     private Rotation2d rawGyroRotation = new Rotation2d();
     private SwerveModulePosition[] previousPositions = new SwerveModulePosition[] {
@@ -58,16 +45,15 @@ public class Drive extends SubsystemBase {
     );
     private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, new Rotation2d(), previousPositions, new Pose2d());
 
-    public Drive(GyroIO gyroIO, ModuleIO[] moduleIOs) {
+    public Drive(GyroIO gyroIO, Module[] modules) {
         this.gyroIO = gyroIO;
-        this.moduleIOs = moduleIOs;
+        this.modules = modules;
     }
 
     @Override
     public void periodic() {
-        for (int i = 0; i < 4; i++) {
-            moduleIOs[i].updateInputs(moduleIOInputs[i]);
-            Logger.processInputs("Drive/Module" + i, moduleIOInputs[i]);
+        for (Module module : modules) {
+            module.updateInputs();
         }
 
         gyroIO.updateInputs(gyroInputs);
@@ -75,7 +61,7 @@ public class Drive extends SubsystemBase {
 
         SwerveModulePosition[] positions = getPositions();
         if (gyroInputs.connected) {
-            rawGyroRotation = gyroInputs.yawPosition;
+            rawGyroRotation = new Rotation2d(gyroInputs.yawPosition);
         } else {
             SwerveModulePosition[] deltas = new SwerveModulePosition[4];
             for (int i = 0; i < 4; i++) {
@@ -118,10 +104,7 @@ public class Drive extends SubsystemBase {
     public SwerveModuleState[] getStates() {
         SwerveModuleState[] states = new SwerveModuleState[4];
         for (int i = 0; i < 4; i++) {
-            states[i] = new SwerveModuleState(
-                moduleIOInputs[i].driveVelocity,
-                new Rotation2d(moduleIOInputs[i].turnPosition)
-            );
+            states[i] = modules[i].getState();
         }
         return states;
     }
@@ -129,8 +112,7 @@ public class Drive extends SubsystemBase {
     public void setStates(SwerveModuleState[] states) {
         Logger.recordOutput("Drive/States/Setpoints", states);
         for (int i = 0; i < 4; i++) {
-            moduleIOs[i].setDriveVelocity(states[i].speedMetersPerSecond, driveFeedforward.calculate(states[i].speedMetersPerSecond));
-            moduleIOs[i].setTurnPosition(states[i].angle.getRadians(), 0.0);
+            modules[i].setState(states[i]);
         }
     }
 
@@ -138,10 +120,7 @@ public class Drive extends SubsystemBase {
     public SwerveModulePosition[] getPositions() {
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
         for (int i = 0; i < 4; i++) {
-            positions[i] = new SwerveModulePosition(
-                moduleIOInputs[i].drivePosition,
-                new Rotation2d(moduleIOInputs[i].turnPosition)
-            );
+            positions[i] = modules[i].getPosition();
         }
         return positions;
     }

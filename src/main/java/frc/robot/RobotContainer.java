@@ -5,26 +5,23 @@
 package frc.robot;
 
 import static frc.robot.Constants.*;
-import static frc.robot.subsystems.elevator.ElevatorConstants.*;
 import static frc.robot.subsystems.drive.DriveConstants.*;
+import static frc.robot.subsystems.elevator.ElevatorConstants.*;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.ModuleIO;
+import frc.robot.subsystems.drive.Module;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class RobotContainer {
     private final Drive drive;
@@ -35,20 +32,13 @@ public class RobotContainer {
     public RobotContainer() {
         switch (currentMode) {
             case REAL:
-                // drive = new Drive(
-                //     new GyroIO() {},
-                //     new ModuleIOSim(),
-                //     new ModuleIOSim(),
-                //     new ModuleIOSim(),
-                //     new ModuleIOSim()
-                // );
                 drive = new Drive(
                     new GyroIO() {},
-                    new ModuleIOReal[] {
-                        new ModuleIOReal(frontLeftDriveId, frontLeftTurnId),
-                        new ModuleIOReal(frontRightDriveId, frontRightTurnId),
-                        new ModuleIOReal(backLeftDriveId, backLeftTurnId),
-                        new ModuleIOReal(backRightDriveId, backRightTurnId)
+                    new Module[] {
+                        new Module(new ModuleIOReal(frontLeftDriveId, frontLeftTurnId, frontLeftEncoderId, frontLeftOffset), 0),
+                        new Module(new ModuleIOReal(frontRightDriveId, frontRightTurnId, frontRightEncoderId, frontRightOffset), 1),
+                        new Module(new ModuleIOReal(backLeftDriveId, backLeftTurnId, backLeftEncoderId, backLeftOffset), 2),
+                        new Module(new ModuleIOReal(backRightDriveId, backRightTurnId, backRightEncoderId, backLeftOffset), 3)
                     }
                 );
                 elevator = new Elevator(new ElevatorIOReal(leftMotorId, rightMotorId));
@@ -58,11 +48,11 @@ public class RobotContainer {
             case REPLAY:
                 drive = new Drive(
                     new GyroIO() {},
-                    new ModuleIOSim[] {
-                        new ModuleIOSim(),
-                        new ModuleIOSim(),
-                        new ModuleIOSim(),
-                        new ModuleIOSim()
+                    new Module[] {
+                        new Module(new ModuleIOSim(), 0),
+                        new Module(new ModuleIOSim(), 1),
+                        new Module(new ModuleIOSim(), 2),
+                        new Module(new ModuleIOSim(), 3)
                     }
                 );
                 elevator = new Elevator(new ElevatorIOSim());
@@ -93,10 +83,6 @@ public class RobotContainer {
             )
         );
 
-        // controller.a().whileTrue(new RunCommand(() -> elevator.reset(), elevator));
-
-        // elevator.getCurrentCommand().cancel();
- 
         // controller.a().whileTrue(elevator.sysIdRoutine());
     }
 

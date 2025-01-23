@@ -36,18 +36,29 @@ public class DriveConstants {
     public static final double halfWidth = Units.inchesToMeters(10.0);
 
     public static final double drivePositionConversionFactor = 2.0 * Math.PI * wheelRadius / driveGearing;
-    public static final double driveVelocityConversionFactor = drivePositionConversionFactor / 60.0;
-
     public static final double turnPositionConversionFactor = 2.0 * Math.PI / turnGearing;
+
+    public static final double driveVelocityConversionFactor = drivePositionConversionFactor / 60.0;
     public static final double turnVelocityConversionFactor = turnPositionConversionFactor / 60.0;
 
     public static final int frontLeftDriveId = 1;
     public static final int frontLeftTurnId =  2;
+    public static final int frontLeftEncoderId = 0;
+    public static final double frontLeftOffset = 0.0;
+
     public static final int frontRightDriveId = 3;
     public static final int frontRightTurnId = 4;
+    public static final int frontRightEncoderId = 1;
+    public static final double frontRightOffset = 0.0;
+
     public static final int backLeftDriveId = 5;
     public static final int backLeftTurnId = 6;
+    public static final int backLeftEncoderId = 2;
+    public static final double backLeftOffset = 0.0;
+
     public static final int backRightDriveId = 7;
     public static final int backRightTurnId = 8;
+    public static final int backRightEncoderId = 3;
+    public static final double backRightOffset = 0.0;
 
 }

@@ -13,6 +13,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.AnalogEncoder;
 import frc.robot.subsystems.drive.ModuleIO.ModuleIOInputs;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
 
@@ -29,9 +30,13 @@ public class ModuleIOReal implements ModuleIO {
     private double driveFeedforward = 0.0;
     private double turnFeedforward = 0.0;
 
-    public ModuleIOReal(int driveId, int turnId) {
+    private final AnalogEncoder encoder;
+
+    public ModuleIOReal(int driveId, int turnId, int encoderId, double offset) {
         driveMotor = new SparkMax(driveId, MotorType.kBrushless);
         turnMotor = new SparkMax(turnId, MotorType.kBrushless);
+
+        encoder = new AnalogEncoder(encoderId);
 
         driveEncoder = driveMotor.getEncoder();
         turnEncoder = turnMotor.getEncoder();
@@ -70,6 +75,8 @@ public class ModuleIOReal implements ModuleIO {
         
         driveMotor.configure(driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         turnMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        turnEncoder.setPosition(encoder.get() - offset * turnPositionConversionFactor);
     }
 
     @Override
