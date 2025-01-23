@@ -46,5 +46,8 @@ public class Module {
         );
     }
 
-     
+    public void setVoltages(double driveVoltage, double turnVoltage) {
+        io.setDriveVelocity(0.0, driveVoltage);
+        io.setTurnPosition(0.0, turnVoltage);
+    }
 }
