@@ -42,16 +42,16 @@ public class RobotContainer {
         switch (currentMode) {
             case REAL:
                 drive = new Drive(
-                    new GyroIOReal(gyroId),
+                    new GyroIO() {},
                     new Module[] {
-                        new Module(new ModuleIOReal(frontLeftDriveId, frontLeftTurnId), new EncoderIOReal(frontLeftEncoderId, frontLeftOffset), 0),
-                        new Module(new ModuleIOReal(frontRightDriveId, frontRightTurnId), new EncoderIOReal(frontRightEncoderId, frontRightOffset), 1),
-                        new Module(new ModuleIOReal(backLeftDriveId, backLeftTurnId), new EncoderIOReal(backLeftEncoderId, backLeftOffset), 2),
-                        new Module(new ModuleIOReal(backRightDriveId, backRightTurnId), new EncoderIOReal(backRightEncoderId, backRightOffset), 3)
+                        new Module(new ModuleIOReal(frontLeftDriveId, frontLeftTurnId), new EncoderIO() {}, 0),
+                        new Module(new ModuleIOReal(frontRightDriveId, frontRightTurnId), new EncoderIO() {}, 1),
+                        new Module(new ModuleIOReal(backLeftDriveId, backLeftTurnId), new EncoderIO() {}, 2),
+                        new Module(new ModuleIOReal(backRightDriveId, backRightTurnId), new EncoderIO() {}, 3)
                     }
                 );
                 elevator = new Elevator(new ElevatorIOReal(leftMotorId, rightMotorId));
-                shooter = new Shooter(new ShooterIOReal(leftFlywheelId, rightFlywheelId));
+                shooter = new Shooter(new ShooterIO() {});
                 break;
             default:
             case SIM:
@@ -87,14 +87,14 @@ public class RobotContainer {
             )
         );
 
-        controller.povDown().whileTrue(new RunCommand(() -> elevator.setPosition(0.0), elevator));
-        controller.povLeft().whileTrue(new RunCommand(() -> elevator.setPosition(0.4), elevator));
-        controller.povRight().whileTrue(new RunCommand(() -> elevator.setPosition(0.8), elevator));
-        controller.povUp().whileTrue(new RunCommand(() -> elevator.setPosition(1.2), elevator));
+        // controller.povDown().onTrue(new RunCommand(() -> elevator.setPosition(0.0), elevator));
+        // controller.povLeft().onTrue(new RunCommand(() -> elevator.setPosition(0.4), elevator));
+        // controller.povRight().onTrue(new RunCommand(() -> elevator.setPosition(0.8), elevator));
+        // controller.povUp().onTrue(new RunCommand(() -> elevator.setPosition(1.0), elevator));
 
-        controller.a().whileTrue(new RunCommand(() -> shooter.setVelocity(1000)));
+        // controller.a().whileTrue(new RunCommand(() -> shooter.setVelocity(1000)));
 
-        // controller.a().whileTrue(elevator.sysIdRoutine());
+        controller.a().whileTrue(elevator.sysIdRoutine());
     }
 
     public Command getAutonomousCommand() {

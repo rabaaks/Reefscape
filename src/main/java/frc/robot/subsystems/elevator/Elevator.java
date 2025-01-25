@@ -59,20 +59,22 @@ public class Elevator extends SubsystemBase {
         Logger.processInputs("Elevator", inputs);
     }
 
-    @AutoLogOutput(key="Elevator/PositionMeasured")
+    @AutoLogOutput(key="Elevator/Position/Measured")
     public double getPosition() {
         return inputs.position;
     }
 
     public void setPosition(double position) {
         futureProfileState = profile.calculate(0.02, profileState, new TrapezoidProfile.State(position, 0.0));
-        Logger.recordOutput("Elevator/PositionSetpoint", profileState.position);
-        Logger.recordOutput("Elevator/VelocitySetpoint", profileState.velocity);
-        io.setPosition(profileState.position, feedforward.calculateWithVelocities(profileState.velocity, futureProfileState.velocity));
+        Logger.recordOutput("Elevator/Position/Setpoint", profileState.position);
+        Logger.recordOutput("Elevator/Velocity/Setpoint", profileState.velocity);
+        double feedforwardValue = feedforward.calculateWithVelocities(profileState.velocity, futureProfileState.velocity);
+        Logger.recordOutput("Elevator/Feedforward", feedforwardValue);
+        io.setPosition(profileState.position, feedforwardValue);
         profileState = futureProfileState;
     }
 
-    @AutoLogOutput(key="Elevator/VelocityMeasured")
+    @AutoLogOutput(key="Elevator/Velocity/Measured")
     public double getVelocity() {
         return inputs.velocity;
     }
@@ -83,9 +85,13 @@ public class Elevator extends SubsystemBase {
 
     public Command sysIdRoutine() {
         return Commands.sequence(
+            Commands.print("1"),
             routine.quasistatic(SysIdRoutine.Direction.kForward).until(() -> inputs.position > sysIdMaxPosition),
+            Commands.print("2"),
             routine.quasistatic(SysIdRoutine.Direction.kReverse).until(() -> inputs.position < sysIdMinPosition),
+            Commands.print("3"),
             routine.dynamic(SysIdRoutine.Direction.kForward).until(() -> inputs.position > sysIdMaxPosition),
+            Commands.print("4"),
             routine.dynamic(SysIdRoutine.Direction.kReverse).until(() -> inputs.position < sysIdMinPosition)
         );
     }

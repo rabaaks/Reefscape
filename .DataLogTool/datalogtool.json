@@ -1,4 +1,9 @@
 {
+  "download": {
+    "deleteAfter": false,
+    "localDir": "C:\\Users\\Aakash\\Downloads\\logs",
+    "serverTeam": "10.10.86.2"
+  },
   "output": {
     "outputFolder": "C:\\Users\\Aakash\\Dev\\Robotics\\log_test"
   }
