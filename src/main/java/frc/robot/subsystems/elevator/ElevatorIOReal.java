@@ -24,11 +24,6 @@ public class ElevatorIOReal implements ElevatorIO {
     private final RelativeEncoder encoder;
     private final SparkClosedLoopController feedback;
 
-    private double feedforward = 0.0;
-
-    private double rotations = 0;
-    private double lastPos = 0;
-
     public ElevatorIOReal(int leftId, int rightId) {
         leftMotor = new SparkMax(leftId, MotorType.kBrushless);
         rightMotor = new SparkMax(rightId, MotorType.kBrushless);

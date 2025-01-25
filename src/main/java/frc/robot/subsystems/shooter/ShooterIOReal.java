@@ -36,16 +36,23 @@ public class ShooterIOReal implements ShooterIO {
             .inverted(false)
             .smartCurrentLimit(60)
             .idleMode(IdleMode.kCoast);
-        config.encoder
-            .positionConversionFactor(positionConversionFactor)
-            .velocityConversionFactor(velocityConversionFactor);
-        config.closedLoop
-            .p(p)
-            .i(i)
-            .d(d);
         leftMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         config
             .follow(leftMotor, true);
         rightMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
+
+    @Override
+    public void updateInputs(ShooterIOInputs inputs) {
+        inputs.leftVoltage = leftMotor.getAppliedOutput() * leftMotor.getBusVoltage();
+        inputs.rightVoltage = rightMotor.getAppliedOutput() * rightMotor.getBusVoltage();
+        inputs.leftCurrent = leftMotor.getOutputCurrent();
+        inputs.rightCurrent = rightMotor.getOutputCurrent();
+    }
+
+    @Override
+    public void setVoltages(double leftVoltage, double rightVoltage) {
+        leftMotor.setVoltage(leftVoltage);
+        rightMotor.setVoltage(rightVoltage);
     }
 }

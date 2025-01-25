@@ -2,6 +2,7 @@ package frc.robot.subsystems.shooter;
 
 import static frc.robot.subsystems.shooter.ShooterConstants.*;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -25,6 +26,6 @@ public class Shooter extends SubsystemBase {
 
     public void setVelocity(double velocity) {
         Logger.recordOutput("Shooter/VelocitySetpoint", velocity);
-        io.setVelocities(velocity, velocity, feedforward.calculate(velocity), feedforward.calculate(velocity));
+        io.setVoltages(feedforward.calculate(velocity), feedforward.calculate(velocity));
     }
 }

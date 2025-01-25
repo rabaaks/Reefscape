@@ -9,12 +9,12 @@ import edu.wpi.first.math.util.Units;
 public class ElevatorConstants {
     public static final DCMotor motor = DCMotor.getNEO(2);
 
-    public static final double mass = Units.lbsToKilograms(30); // change to actual weight
+    public static final double mass = Units.lbsToKilograms(30.0); // change to actual weight
     public static final double radius = Units.inchesToMeters(0.9175);
     public static final double gearing = 6.75;
 
-    public static final double maxHeight = Units.inchesToMeters(56);
-    public static final double minHeight = Units.inchesToMeters(0);
+    public static final double maxHeight = Units.inchesToMeters(46.5);
+    public static final double minHeight = Units.inchesToMeters(0.0);
     public static final double startingHeight = minHeight;
 
     public static final double p = 8.8431;
@@ -36,7 +36,7 @@ public class ElevatorConstants {
     public static final double velocityConversionFactor = positionConversionFactor / 60.0;
 
     public static final double sysIdMinPosition = 0.3;
-    public static final double sysIdMaxPosition = 1.1;
+    public static final double sysIdMaxPosition = 0.9;
 
     public static final double sysIdRampUp = 3.0;
     public static final double sysIdStep = 8.0;

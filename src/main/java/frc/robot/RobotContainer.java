@@ -7,6 +7,8 @@ package frc.robot;
 import static frc.robot.Constants.*;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 import static frc.robot.subsystems.elevator.ElevatorConstants.*;
+import static frc.robot.subsystems.shooter.ShooterConstants.leftFlywheelId;
+import static frc.robot.subsystems.shooter.ShooterConstants.rightFlywheelId;
 
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.EncoderIO;
@@ -19,6 +21,9 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOReal;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 public class RobotContainer {
     private final Drive drive;
     private final Elevator elevator;
+    private final Shooter shooter;
 
     private final CommandXboxController controller = new CommandXboxController(driverControllerPort);
 
@@ -45,6 +51,7 @@ public class RobotContainer {
                     }
                 );
                 elevator = new Elevator(new ElevatorIOReal(leftMotorId, rightMotorId));
+                shooter = new Shooter(new ShooterIOReal(leftFlywheelId, rightFlywheelId));
                 break;
             default:
             case SIM:
@@ -59,6 +66,7 @@ public class RobotContainer {
                     }
                 );
                 elevator = new Elevator(new ElevatorIOSim());
+                shooter = new Shooter(new ShooterIO() {});
                 break;
         }
 
@@ -79,12 +87,12 @@ public class RobotContainer {
             )
         );
 
-        elevator.setDefaultCommand(
-            new RunCommand(
-                () -> elevator.setPosition(controller.povDown().getAsBoolean() ? 1.3 : (controller.povLeft().getAsBoolean() ? 1.0 : (controller.povUp().getAsBoolean() ? 0.6 : (controller.povRight().getAsBoolean() ? 0.3 : 0.0)))),
-                elevator
-            )
-        );
+        controller.povDown().whileTrue(new RunCommand(() -> elevator.setPosition(0.0), elevator));
+        controller.povLeft().whileTrue(new RunCommand(() -> elevator.setPosition(0.4), elevator));
+        controller.povRight().whileTrue(new RunCommand(() -> elevator.setPosition(0.8), elevator));
+        controller.povUp().whileTrue(new RunCommand(() -> elevator.setPosition(1.2), elevator));
+
+        controller.a().whileTrue(new RunCommand(() -> shooter.setVelocity(1000)));
 
         // controller.a().whileTrue(elevator.sysIdRoutine());
     }
