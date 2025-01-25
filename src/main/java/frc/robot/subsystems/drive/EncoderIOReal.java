@@ -17,6 +17,6 @@ public class EncoderIOReal implements EncoderIO {
     @Override
     public void updateInputs(EncoderIOInputs inputs) {
         inputs.connected = true;
-        inputs.position = 2.0 * Math.PI * encoder.get() - offset;
+        inputs.position = 2.0 * Math.PI * (encoder.get() - offset);
     }
 }

@@ -11,7 +11,7 @@ public class ElevatorConstants {
 
     public static final double mass = Units.lbsToKilograms(30); // change to actual weight
     public static final double radius = Units.inchesToMeters(0.9175);
-    public static final double gearing = 6.0;
+    public static final double gearing = 6.75;
 
     public static final double maxHeight = Units.inchesToMeters(56);
     public static final double minHeight = Units.inchesToMeters(0);
@@ -21,7 +21,6 @@ public class ElevatorConstants {
     public static final double i = 0.0;
     public static final double d = 1.4176;
 
-    // constants tested with 30 lbs sim
     public static final double s = 0.39969;
     public static final double g = 0.14159;
     public static final double v = 4.9841;

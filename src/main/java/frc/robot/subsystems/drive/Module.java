@@ -36,7 +36,7 @@ public class Module {
             rawModuleHeading = new Rotation2d(inputs.turnPosition);
         }
         
-        io.resetPosition(encoderInputs.position);
+        io.resetPosition(rawModuleHeading.getRadians());
     }
 
     public void updateInputs() {
