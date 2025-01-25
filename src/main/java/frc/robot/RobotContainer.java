@@ -9,7 +9,10 @@ import static frc.robot.subsystems.drive.DriveConstants.*;
 import static frc.robot.subsystems.elevator.ElevatorConstants.*;
 
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.EncoderIO;
+import frc.robot.subsystems.drive.EncoderIOReal;
 import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIOReal;
 import frc.robot.subsystems.drive.Module;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
@@ -33,12 +36,12 @@ public class RobotContainer {
         switch (currentMode) {
             case REAL:
                 drive = new Drive(
-                    new GyroIO() {},
+                    new GyroIOReal(gyroId),
                     new Module[] {
-                        new Module(new ModuleIOReal(frontLeftDriveId, frontLeftTurnId, frontLeftEncoderId, frontLeftOffset), 0),
-                        new Module(new ModuleIOReal(frontRightDriveId, frontRightTurnId, frontRightEncoderId, frontRightOffset), 1),
-                        new Module(new ModuleIOReal(backLeftDriveId, backLeftTurnId, backLeftEncoderId, backLeftOffset), 2),
-                        new Module(new ModuleIOReal(backRightDriveId, backRightTurnId, backRightEncoderId, backLeftOffset), 3)
+                        new Module(new ModuleIOReal(frontLeftDriveId, frontLeftTurnId), new EncoderIOReal(frontLeftEncoderId, frontLeftOffset), 0),
+                        new Module(new ModuleIOReal(frontRightDriveId, frontRightTurnId), new EncoderIOReal(frontRightEncoderId, frontRightOffset), 1),
+                        new Module(new ModuleIOReal(backLeftDriveId, backLeftTurnId), new EncoderIOReal(backLeftEncoderId, backLeftOffset), 2),
+                        new Module(new ModuleIOReal(backRightDriveId, backRightTurnId), new EncoderIOReal(backRightEncoderId, backRightOffset), 3)
                     }
                 );
                 elevator = new Elevator(new ElevatorIOReal(leftMotorId, rightMotorId));
@@ -49,10 +52,10 @@ public class RobotContainer {
                 drive = new Drive(
                     new GyroIO() {},
                     new Module[] {
-                        new Module(new ModuleIOSim(), 0),
-                        new Module(new ModuleIOSim(), 1),
-                        new Module(new ModuleIOSim(), 2),
-                        new Module(new ModuleIOSim(), 3)
+                        new Module(new ModuleIOSim(), new EncoderIO() {}, 0),
+                        new Module(new ModuleIOSim(), new EncoderIO() {}, 1),
+                        new Module(new ModuleIOSim(), new EncoderIO() {}, 2),
+                        new Module(new ModuleIOSim(), new EncoderIO() {}, 3)
                     }
                 );
                 elevator = new Elevator(new ElevatorIOSim());

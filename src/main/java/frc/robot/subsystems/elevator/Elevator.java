@@ -59,6 +59,11 @@ public class Elevator extends SubsystemBase {
         Logger.processInputs("Elevator", inputs);
     }
 
+    @AutoLogOutput(key="Elevator/PositionMeasured")
+    public double getPosition() {
+        return inputs.position;
+    }
+
     public void setPosition(double position) {
         futureProfileState = profile.calculate(0.02, profileState, new TrapezoidProfile.State(position, 0.0));
         Logger.recordOutput("Elevator/PositionSetpoint", profileState.position);
@@ -67,18 +72,13 @@ public class Elevator extends SubsystemBase {
         profileState = futureProfileState;
     }
 
-    public void reset() {
-        io.reset();
-    }
-
-    @AutoLogOutput(key="Elevator/PositionMeasured")
-    public double getPosition() {
-        return inputs.position;
-    }
-
     @AutoLogOutput(key="Elevator/VelocityMeasured")
     public double getVelocity() {
         return inputs.velocity;
+    }
+
+    public void reset() {
+        io.reset();
     }
 
     public Command sysIdRoutine() {

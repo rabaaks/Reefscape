@@ -28,6 +28,7 @@ public class Drive extends SubsystemBase {
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 
     private Rotation2d rawGyroRotation = new Rotation2d();
+    
     private SwerveModulePosition[] previousPositions = new SwerveModulePosition[] {
         new SwerveModulePosition(),
         new SwerveModulePosition(),

@@ -13,18 +13,38 @@ public class Module {
     private final ModuleIO io;
     private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
 
+    private final EncoderIO encoderIO;
+    private final EncoderIOInputsAutoLogged encoderInputs = new EncoderIOInputsAutoLogged();
+
     private final int index;
 
     private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(driveS, driveV, driveA);
 
-    public Module(ModuleIO io, int index) {
+    Rotation2d rawModuleHeading;
+
+    public Module(ModuleIO io, EncoderIO encoderIO, int index) {
         this.io = io;
+        this.encoderIO = encoderIO;
+
         this.index = index;
+
+        updateInputs();
+
+        if (encoderInputs.connected) {
+            rawModuleHeading = new Rotation2d(encoderInputs.position);
+        } else {
+            rawModuleHeading = new Rotation2d(inputs.turnPosition);
+        }
+        
+        io.resetPosition(encoderInputs.position);
     }
 
     public void updateInputs() {
         io.updateInputs(inputs);
         Logger.processInputs("Drive/Modules/" + index, inputs);
+
+        encoderIO.updateInputs(encoderInputs);
+        Logger.processInputs("Drive/Encoders/" + index, encoderInputs);
     }
 
     public SwerveModuleState getState() {

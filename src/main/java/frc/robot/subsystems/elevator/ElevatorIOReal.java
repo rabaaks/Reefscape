@@ -18,8 +18,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 
 public class ElevatorIOReal implements ElevatorIO {
-    private SparkMax leftMotor;
-    private SparkMax rightMotor;
+    private final SparkMax leftMotor;
+    private final SparkMax rightMotor;
 
     private final RelativeEncoder encoder;
     private final SparkClosedLoopController feedback;

@@ -24,4 +24,6 @@ public interface ModuleIO {
     public default void setDriveVelocity(double velocity, double ffVoltage) {}
 
     public default void setTurnPosition(double position, double ffVoltage) {}
+
+    public default void resetPosition(double position) {}
 }

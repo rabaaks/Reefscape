@@ -30,13 +30,9 @@ public class ModuleIOReal implements ModuleIO {
     private double driveFeedforward = 0.0;
     private double turnFeedforward = 0.0;
 
-    private final AnalogEncoder encoder;
-
-    public ModuleIOReal(int driveId, int turnId, int encoderId, double offset) {
+    public ModuleIOReal(int driveId, int turnId) {
         driveMotor = new SparkMax(driveId, MotorType.kBrushless);
         turnMotor = new SparkMax(turnId, MotorType.kBrushless);
-
-        encoder = new AnalogEncoder(encoderId);
 
         driveEncoder = driveMotor.getEncoder();
         turnEncoder = turnMotor.getEncoder();
@@ -75,8 +71,6 @@ public class ModuleIOReal implements ModuleIO {
         
         driveMotor.configure(driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         turnMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-        turnEncoder.setPosition(encoder.get() - offset * turnPositionConversionFactor);
     }
 
     @Override
@@ -100,5 +94,10 @@ public class ModuleIOReal implements ModuleIO {
     @Override
     public void setTurnPosition(double position, double ffVoltage) {
         turnFeedback.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0, ffVoltage);
+    }
+
+    @Override
+    public void resetPosition(double position) {
+        turnEncoder.setPosition(position);
     }
 }
