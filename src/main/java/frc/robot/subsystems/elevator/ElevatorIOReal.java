@@ -34,7 +34,7 @@ public class ElevatorIOReal implements ElevatorIO {
         SparkMaxConfig config = new SparkMaxConfig();
         config
             .inverted(false)
-            .smartCurrentLimit(40)
+            .smartCurrentLimit(60)
             .idleMode(IdleMode.kCoast);
         config.encoder
             .positionConversionFactor(positionConversionFactor)
