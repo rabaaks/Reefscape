@@ -28,9 +28,6 @@ public class ElevatorIOReal implements ElevatorIO {
         leftMotor = new SparkMax(leftId, MotorType.kBrushless);
         rightMotor = new SparkMax(rightId, MotorType.kBrushless);
 
-        encoder = leftMotor.getEncoder();
-        feedback = leftMotor.getClosedLoopController();
-
         SparkMaxConfig config = new SparkMaxConfig();
         config
             .inverted(false)
@@ -47,6 +44,9 @@ public class ElevatorIOReal implements ElevatorIO {
         config
             .follow(leftMotor, true);
         rightMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        encoder = leftMotor.getEncoder();
+        feedback = leftMotor.getClosedLoopController();
     }
 
     @Override
