@@ -2,6 +2,7 @@ package frc.robot.subsystems.shooter;
 
 import static frc.robot.subsystems.shooter.ShooterConstants.*;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -28,14 +29,12 @@ public class ShooterIOReal implements ShooterIO {
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
-        inputs.voltages = new double[] {topMotor.getMotorOutputVoltage, bottomMotor.getMotorOutputVoltage()}
-        inputs.leftCurrent = leftMotor.getOutputCurrent();
-        inputs.rightCurrent = rightMotor.getOutputCurrent();
+        inputs.voltages = new double[] {topMotor.getMotorOutputVoltage(), bottomMotor.getMotorOutputVoltage()};
+        inputs.currents = new double[] {topMotor.getSupplyCurrent(), bottomMotor.getSupplyCurrent()};
     }
 
     @Override
-    public void setVoltages(double leftVoltage, double rightVoltage) {
-        leftMotor.setVoltage(leftVoltage);
-        rightMotor.setVoltage(rightVoltage);
+    public void setVoltage(double voltage) {
+        topMotor.set(ControlMode.PercentOutput, voltage / 12.0);
     }
 }

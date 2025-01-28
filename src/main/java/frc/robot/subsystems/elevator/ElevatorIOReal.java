@@ -47,6 +47,8 @@ public class ElevatorIOReal implements ElevatorIO {
 
         encoder = leftMotor.getEncoder();
         feedback = leftMotor.getClosedLoopController();
+
+        leftMotor.setVoltage(rightId);
     }
 
     @Override
