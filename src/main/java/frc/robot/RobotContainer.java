@@ -7,6 +7,8 @@ package frc.robot;
 import static frc.robot.Constants.*;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 import static frc.robot.subsystems.elevator.ElevatorConstants.*;
+import static frc.robot.subsystems.shooter.ShooterConstants.bottomFlywheelId;
+import static frc.robot.subsystems.shooter.ShooterConstants.topFlywheelId;
 
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.EncoderIO;
@@ -42,14 +44,14 @@ public class RobotContainer {
                 drive = new Drive(
                     new GyroIO() {},
                     new Module[] {
-                        new Module(new ModuleIOReal(frontLeftDriveId, frontLeftTurnId), new EncoderIO() {}, 0),
-                        new Module(new ModuleIOReal(frontRightDriveId, frontRightTurnId), new EncoderIO() {}, 1),
-                        new Module(new ModuleIOReal(backLeftDriveId, backLeftTurnId), new EncoderIO() {}, 2),
-                        new Module(new ModuleIOReal(backRightDriveId, backRightTurnId), new EncoderIO() {}, 3)
+                        new Module(new ModuleIOReal(frontLeftDriveId, frontLeftTurnId), new EncoderIOReal(frontLeftEncoderId, frontLeftOffset), 0),
+                        new Module(new ModuleIOReal(frontRightDriveId, frontRightTurnId), new EncoderIOReal(frontRightEncoderId, frontRightOffset), 1),
+                        new Module(new ModuleIOReal(backLeftDriveId, backLeftTurnId), new EncoderIOReal(backLeftEncoderId, backLeftOffset), 2),
+                        new Module(new ModuleIOReal(backRightDriveId, backRightTurnId), new EncoderIOReal(backRightEncoderId, backRightOffset), 3)
                     }
                 );
                 elevator = new Elevator(new ElevatorIOReal(leftMotorId, rightMotorId));
-                shooter = new Shooter(new ShooterIO() {});
+                shooter = new Shooter(new ShooterIOReal(topFlywheelId, bottomFlywheelId));
                 break;
             default:
             case SIM:
@@ -96,10 +98,19 @@ public class RobotContainer {
             new RunCommand(
                 () -> {
                     elevator.setPosition(
-                        controller.getLeftTriggerAxis()
+                        controller.povUp().getAsBoolean() ? 1.1 : (controller.povLeft().getAsBoolean() ? 0.7 : (controller.povRight().getAsBoolean() ? 0.35 : 0))
                     );
                 },
                 elevator
+            )
+        );
+
+        shooter.setDefaultCommand(
+            new RunCommand(
+                () -> {
+                    shooter.setVelocity(controller.getRightTriggerAxis() * 12.0);
+                },
+                shooter
             )
         );
 

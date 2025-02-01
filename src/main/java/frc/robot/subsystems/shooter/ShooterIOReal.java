@@ -22,9 +22,10 @@ public class ShooterIOReal implements ShooterIO {
         topMotor.setNeutralMode(NeutralMode.Coast);
         topMotor.setNeutralMode(NeutralMode.Coast);
 
-        bottomMotor.follow(topMotor);
+        topMotor.setInverted(InvertType.InvertMotorOutput);
+        bottomMotor.setInverted(InvertType.InvertMotorOutput);
 
-        bottomMotor.setInverted(InvertType.OpposeMaster);
+        bottomMotor.follow(topMotor);
     }
 
     @Override
