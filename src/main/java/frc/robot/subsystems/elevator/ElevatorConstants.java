@@ -17,17 +17,17 @@ public class ElevatorConstants {
     public static final double minHeight = Units.inchesToMeters(0.0);
     public static final double startingHeight = minHeight;
 
-    public static final double p = 5.8256;
+    public static final double p = 5.1253;
     public static final double i = 0.0;
-    public static final double d = 1.0701;
+    public static final double d = 0.0;
 
-    public static final double s = 0.29834;
-    public static final double g = 0.35949;
-    public static final double v = 6.0229;
-    public static final double a = 0.80419;
+    public static final double s = 0.37879;
+    public static final double g = 0.80439;
+    public static final double v = 6.9315;
+    public static final double a = 1.2464;
 
-    public static final double maxProfileVelocity = 0.25;
-    public static final double maxProfileAcceleration = 0.25;
+    public static final double maxProfileVelocity = 1.0;
+    public static final double maxProfileAcceleration = 1.0;
 
     public static final int leftMotorId = 30;
     public static final int rightMotorId = 31;

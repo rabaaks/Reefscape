@@ -7,8 +7,6 @@ package frc.robot;
 import static frc.robot.Constants.*;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 import static frc.robot.subsystems.elevator.ElevatorConstants.*;
-import static frc.robot.subsystems.shooter.ShooterConstants.leftFlywheelId;
-import static frc.robot.subsystems.shooter.ShooterConstants.rightFlywheelId;
 
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.EncoderIO;
@@ -94,7 +92,18 @@ public class RobotContainer {
 
         // controller.a().whileTrue(new RunCommand(() -> shooter.setVelocity(1000)));
 
-        controller.a().whileTrue(elevator.sysIdRoutine());
+        elevator.setDefaultCommand(
+            new RunCommand(
+                () -> {
+                    elevator.setPosition(
+                        controller.getLeftTriggerAxis()
+                    );
+                },
+                elevator
+            )
+        );
+
+        // controller.a().whileTrue(elevator.sysIdRoutine());
     }
 
     public Command getAutonomousCommand() {
