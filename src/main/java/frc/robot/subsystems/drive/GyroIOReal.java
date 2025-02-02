@@ -7,11 +7,17 @@ public class GyroIOReal implements GyroIO {
 
     public GyroIOReal(int id) { 
         gyro = new Pigeon2(id);
+        gyro.reset();
     }
 
     @Override
     public void updateInputs(GyroIOInputs inputs) {
         inputs.connected = true;
-        inputs.yawPosition = gyro.getRotation2d().getRadians();
+        inputs.yawPosition = gyro.getRotation2d().getRadians() - Math.PI;
+    }
+
+    @Override
+    public void reset() {
+        gyro.reset();
     }
 }

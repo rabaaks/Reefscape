@@ -57,7 +57,7 @@ public class RobotContainer {
             case SIM:
             case REPLAY:
                 drive = new Drive(
-                    new GyroIO() {},
+                    new GyroIOReal(11),
                     new Module[] {
                         new Module(new ModuleIOSim(), new EncoderIO() {}, 0),
                         new Module(new ModuleIOSim(), new EncoderIO() {}, 1),
@@ -98,7 +98,7 @@ public class RobotContainer {
             new RunCommand(
                 () -> {
                     elevator.setPosition(
-                        controller.povUp().getAsBoolean() ? 1.1 : (controller.povLeft().getAsBoolean() ? 0.7 : (controller.povRight().getAsBoolean() ? 0.35 : 0))
+                        controller.povUp().getAsBoolean() ? 1.0 : (controller.povLeft().getAsBoolean() ? 0.6 : (controller.povRight().getAsBoolean() ? 0.4 : 0))
                     );
                 },
                 elevator
