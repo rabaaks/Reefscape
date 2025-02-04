@@ -2,8 +2,6 @@ package frc.robot.subsystems.drive;
 
 import edu.wpi.first.wpilibj.AnalogEncoder;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
-
 public class EncoderIOReal implements EncoderIO {
     AnalogEncoder encoder;
 

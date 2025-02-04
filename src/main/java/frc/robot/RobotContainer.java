@@ -7,8 +7,7 @@ package frc.robot;
 import static frc.robot.Constants.*;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 import static frc.robot.subsystems.elevator.ElevatorConstants.*;
-import static frc.robot.subsystems.shooter.ShooterConstants.bottomFlywheelId;
-import static frc.robot.subsystems.shooter.ShooterConstants.topFlywheelId;
+import static frc.robot.subsystems.shooter.ShooterConstants.*;
 
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.EncoderIO;
@@ -42,7 +41,7 @@ public class RobotContainer {
         switch (currentMode) {
             case REAL:
                 drive = new Drive(
-                    new GyroIO() {},
+                    new GyroIOReal(11),
                     new Module[] {
                         new Module(new ModuleIOReal(frontLeftDriveId, frontLeftTurnId), new EncoderIOReal(frontLeftEncoderId, frontLeftOffset), 0),
                         new Module(new ModuleIOReal(frontRightDriveId, frontRightTurnId), new EncoderIOReal(frontRightEncoderId, frontRightOffset), 1),
@@ -57,7 +56,7 @@ public class RobotContainer {
             case SIM:
             case REPLAY:
                 drive = new Drive(
-                    new GyroIOReal(11),
+                    new GyroIO() {},
                     new Module[] {
                         new Module(new ModuleIOSim(), new EncoderIO() {}, 0),
                         new Module(new ModuleIOSim(), new EncoderIO() {}, 1),

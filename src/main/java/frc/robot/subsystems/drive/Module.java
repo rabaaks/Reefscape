@@ -55,6 +55,7 @@ public class Module {
     }
 
     public void setState(SwerveModuleState state) {
+        state.optimize(new Rotation2d(inputs.turnPosition));
         io.setDriveVelocity(state.speedMetersPerSecond, driveFeedforward.calculate(state.speedMetersPerSecond));
         io.setTurnPosition(state.angle.getRadians(), 0.0);
     }

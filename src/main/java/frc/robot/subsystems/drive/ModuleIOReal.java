@@ -13,10 +13,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.wpilibj.AnalogEncoder;
-import frc.robot.subsystems.drive.ModuleIO.ModuleIOInputs;
-import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
-
 public class ModuleIOReal implements ModuleIO {
     private SparkMax driveMotor;
     private SparkMax turnMotor;
@@ -26,9 +22,6 @@ public class ModuleIOReal implements ModuleIO {
 
     private final SparkClosedLoopController driveFeedback;
     private final SparkClosedLoopController turnFeedback;
-
-    private double driveFeedforward = 0.0;
-    private double turnFeedforward = 0.0;
 
     public ModuleIOReal(int driveId, int turnId) {
         driveMotor = new SparkMax(driveId, MotorType.kBrushless);
