@@ -6,9 +6,6 @@ import edu.wpi.first.math.util.Units;
 public class DriveConstants {
     public static final double driveMaxSpeed = 4.0;
 
-
-    
-
     public static final double driveSpeed = 1.0;
     public static final double turnSpeed = 2.0;
 
