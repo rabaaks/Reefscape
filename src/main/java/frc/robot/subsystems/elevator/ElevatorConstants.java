@@ -14,17 +14,17 @@ public class ElevatorConstants {
     public static final double minHeight = Units.inchesToMeters(0.0);
     public static final double startingHeight = minHeight;
 
-    public static final double p = 5.1253;
+    public static final double p = 23.918;
     public static final double i = 0.0;
-    public static final double d = 1.1194;
+    public static final double d = 0.45168;
 
-    public static final double s = 0.37879;
-    public static final double g = 0.80439;
-    public static final double v = 6.9315;
-    public static final double a = 1.2464;
+    public static final double s = 0.0;
+    public static final double g = 1.0612;
+    public static final double v = 5.7377;
+    public static final double a = 0.10485;
 
-    public static final double maxProfileVelocity = 2.0;
-    public static final double maxProfileAcceleration = 2.0;
+    public static final double maxProfileVelocity = 0.5;
+    public static final double maxProfileAcceleration = 0.5;
 
     public static final int leftMotorId = 30;
     public static final int rightMotorId = 31;
@@ -35,7 +35,7 @@ public class ElevatorConstants {
     public static final double sysIdMinPosition = 0.1;
     public static final double sysIdMaxPosition = 0.9;
 
-    public static final double sysIdRampUp = 1.5;
-    public static final double sysIdStep = 4.5;
+    public static final double sysIdRampUp = 1.0;
+    public static final double sysIdStep = 3.0;
     public static final double sysIdTimeout = 20.0;
 }

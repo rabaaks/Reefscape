@@ -29,7 +29,7 @@ public class CameraIOReal implements CameraIO {
         inputs.connected = camera.isConnected();
 
         photonPoseEstimator.setReferencePose(previousPose);
-        Pose3d pose = photonPoseEstimator.update(camera.getLatestResult()).get().estimatedPose;
+        Pose3d pose = photonPoseEstimator.update(camera.getAllUnreadResults().get(0)).get().estimatedPose;
         inputs.pose = pose;
         previousPose = pose;
     }

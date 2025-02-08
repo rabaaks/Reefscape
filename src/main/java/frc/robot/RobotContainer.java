@@ -113,7 +113,7 @@ public class RobotContainer {
             )
         );
 
-        // controller.a().whileTrue(elevator.sysIdRoutine());
+        controller.a().whileTrue(elevator.sysIdRoutine());
     }
 
     public Command getAutonomousCommand() {
