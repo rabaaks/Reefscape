@@ -22,7 +22,7 @@ public class Elevator extends SubsystemBase {
     private final ElevatorIO io;
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
-    private final ExponentialProfile profile = new ExponentialProfile(ExponentialProfile.Constraints.fromCharacteristics(12.0 - s - g, v, a));
+    private final ExponentialProfile profile = new ExponentialProfile(ExponentialProfile.Constraints.fromCharacteristics(9.0 - s - g, v, a));
     private ExponentialProfile.State profileState = new ExponentialProfile.State(0.0, 0.0);
     private ExponentialProfile.State futureProfileState = new ExponentialProfile.State(0.0, 0.0);
 
@@ -69,7 +69,7 @@ public class Elevator extends SubsystemBase {
         Logger.recordOutput("Elevator/Velocity/Setpoint", profileState.velocity);
         double feedforwardValue = feedforward.calculateWithVelocities(profileState.velocity, futureProfileState.velocity);
         Logger.recordOutput("Elevator/Feedforward", feedforwardValue);
-        io.setPosition(profileState.position, feedforwardValue);
+        io.setPosition(futureProfileState.position, feedforwardValue);
         profileState = futureProfileState;
     }
 

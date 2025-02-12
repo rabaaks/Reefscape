@@ -35,7 +35,7 @@ public class ElevatorConstants {
     public static final double sysIdMinPosition = 0.1;
     public static final double sysIdMaxPosition = 0.9;
 
-    public static final double sysIdRampUp = 1.0;
-    public static final double sysIdStep = 3.0;
+    public static final double sysIdRampUp = 2.5;
+    public static final double sysIdStep = 6.0;
     public static final double sysIdTimeout = 20.0;
 }
