@@ -81,7 +81,22 @@ public class Drive extends SubsystemBase {
 
     public void setSpeeds(ChassisSpeeds speeds) {
         Logger.recordOutput("Drive/Speeds/Setpoints", speeds);
-        SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+        SwerveModuleState[] states;
+        if (
+            speeds.vxMetersPerSecond == 0.0 &&
+            speeds.vyMetersPerSecond == 0.0 &&
+            speeds.omegaRadiansPerSecond == 0.0
+        ) {
+            states = new SwerveModuleState[] {
+                new SwerveModuleState(0.0, new Rotation2d(Math.PI / 4.0)),
+                new SwerveModuleState(0.0, new Rotation2d(-Math.PI / 4.0)),
+                new SwerveModuleState(0.0, new Rotation2d(-Math.PI / 4.0)),
+                new SwerveModuleState(0.0, new Rotation2d(Math.PI / 4.0)),
+
+            };
+        } else {
+            states = kinematics.toSwerveModuleStates(speeds);
+        }
         SwerveDriveKinematics.desaturateWheelSpeeds(states, driveMaxSpeed);
 
         setStates(states);
@@ -108,6 +123,7 @@ public class Drive extends SubsystemBase {
     public void setStates(SwerveModuleState[] states) {
         Logger.recordOutput("Drive/States/Setpoints", states);
         for (int i = 0; i < 4; i++) {
+            states[i].optimize(modules[i].getRotation());
             modules[i].setState(states[i]);
         }
     }

@@ -50,12 +50,11 @@ public class Module {
     public SwerveModuleState getState() {
         return new SwerveModuleState(
             inputs.driveVelocity,
-            new Rotation2d(inputs.turnPosition)
+            getRotation()
         );
     }
 
     public void setState(SwerveModuleState state) {
-        state.optimize(new Rotation2d(inputs.turnPosition));
         io.setDriveVelocity(state.speedMetersPerSecond, driveFeedforward.calculate(state.speedMetersPerSecond));
         io.setTurnPosition(state.angle.getRadians(), 0.0);
     }
@@ -63,12 +62,16 @@ public class Module {
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(
             inputs.drivePosition,
-            new Rotation2d(inputs.turnPosition)
+            getRotation()
         );
     }
 
     public void setVoltages(double driveVoltage, double turnVoltage) {
         io.setDriveVelocity(0.0, driveVoltage);
         io.setTurnPosition(0.0, turnVoltage);
+    }
+
+    public Rotation2d getRotation() {
+        return new Rotation2d(inputs.turnPosition);
     }
 }
