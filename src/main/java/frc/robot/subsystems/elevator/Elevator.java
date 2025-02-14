@@ -22,7 +22,7 @@ public class Elevator extends SubsystemBase {
     private final ElevatorIO io;
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
-    private final ExponentialProfile profile = new ExponentialProfile(ExponentialProfile.Constraints.fromCharacteristics(12.0 - s - g, v, a));
+    private final ExponentialProfile profile = new ExponentialProfile(ExponentialProfile.Constraints.fromCharacteristics(maxProfileVoltage - s - g, v, a));
     private ExponentialProfile.State profileState = new ExponentialProfile.State(0.0, 0.0);
     private ExponentialProfile.State futureProfileState = new ExponentialProfile.State(0.0, 0.0);
 

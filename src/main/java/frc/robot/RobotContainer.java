@@ -40,13 +40,22 @@ public class RobotContainer {
     public RobotContainer() {
         switch (currentMode) {
             case REAL:
+                // drive = new Drive(
+                //     new GyroIOReal(11),
+                //     new Module[] {
+                //         new Module(new ModuleIOReal(frontLeftDriveId, frontLeftTurnId), new EncoderIOReal(frontLeftEncoderId, frontLeftOffset), 0),
+                //         new Module(new ModuleIOReal(frontRightDriveId, frontRightTurnId), new EncoderIOReal(frontRightEncoderId, frontRightOffset), 1),
+                //         new Module(new ModuleIOReal(backLeftDriveId, backLeftTurnId), new EncoderIOReal(backLeftEncoderId, backLeftOffset), 2),
+                //         new Module(new ModuleIOReal(backRightDriveId, backRightTurnId), new EncoderIOReal(backRightEncoderId, backRightOffset), 3)
+                //     }
+                // );
                 drive = new Drive(
-                    new GyroIOReal(11),
+                    new GyroIO() {},
                     new Module[] {
-                        new Module(new ModuleIOReal(frontLeftDriveId, frontLeftTurnId), new EncoderIOReal(frontLeftEncoderId, frontLeftOffset), 0),
-                        new Module(new ModuleIOReal(frontRightDriveId, frontRightTurnId), new EncoderIOReal(frontRightEncoderId, frontRightOffset), 1),
-                        new Module(new ModuleIOReal(backLeftDriveId, backLeftTurnId), new EncoderIOReal(backLeftEncoderId, backLeftOffset), 2),
-                        new Module(new ModuleIOReal(backRightDriveId, backRightTurnId), new EncoderIOReal(backRightEncoderId, backRightOffset), 3)
+                        new Module(new ModuleIOSim(), new EncoderIO() {}, 0),
+                        new Module(new ModuleIOSim(), new EncoderIO() {}, 1),
+                        new Module(new ModuleIOSim(), new EncoderIO() {}, 2),
+                        new Module(new ModuleIOSim(), new EncoderIO() {}, 3)
                     }
                 );
                 elevator = new Elevator(new ElevatorIOReal(leftMotorId, rightMotorId));
@@ -97,7 +106,7 @@ public class RobotContainer {
             new RunCommand(
                 () -> {
                     elevator.setPosition(
-                        controller.povUp().getAsBoolean() ? 1.0 : (controller.povLeft().getAsBoolean() ? 0.6 : (controller.povRight().getAsBoolean() ? 0.4 : 0))
+                        controller.povUp().getAsBoolean() ? 1.0 : (controller.povLeft().getAsBoolean() ? 0.6 : (controller.povRight().getAsBoolean() ? 0.4 : 0.1))
                     );
                 },
                 elevator
