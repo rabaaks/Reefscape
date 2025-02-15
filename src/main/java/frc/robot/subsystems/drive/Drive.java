@@ -44,6 +44,8 @@ public class Drive extends SubsystemBase {
     public Drive(GyroIO gyroIO, Module[] modules) {
         this.gyroIO = gyroIO;
         this.modules = modules;
+
+        gyroIO.reset();
     }
 
     @Override

@@ -26,12 +26,16 @@ public class Elevator extends SubsystemBase {
     private ExponentialProfile.State profileState = new ExponentialProfile.State(0.0, 0.0);
     private ExponentialProfile.State futureProfileState = new ExponentialProfile.State(0.0, 0.0);
 
-    private ElevatorFeedforward feedforward = new ElevatorFeedforward(s, g, v, a);
+    private ElevatorFeedforward feedforward = new ElevatorFeedforward(s, g, v);
 
     private final SysIdRoutine routine;
 
     public Elevator(ElevatorIO io) {
         this.io = io;
+
+        periodic();
+
+        profileState.position = inputs.position;
 
         routine = new SysIdRoutine(
             new SysIdRoutine.Config(

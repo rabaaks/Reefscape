@@ -1,6 +1,5 @@
 {
   "download": {
-    "deleteAfter": false,
     "localDir": "C:\\Users\\Aakash\\Downloads\\logs",
     "serverTeam": "10.10.86.2"
   },

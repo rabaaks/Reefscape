@@ -13,7 +13,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-public class ModuleIOReal implements ModuleIO {
+public class ModuleIOSparkMax implements ModuleIO {
     private SparkMax driveMotor;
     private SparkMax turnMotor;
 
@@ -23,7 +23,7 @@ public class ModuleIOReal implements ModuleIO {
     private final SparkClosedLoopController driveFeedback;
     private final SparkClosedLoopController turnFeedback;
 
-    public ModuleIOReal(int driveId, int turnId) {
+    public ModuleIOSparkMax(int driveId, int turnId) {
         driveMotor = new SparkMax(driveId, MotorType.kBrushless);
         turnMotor = new SparkMax(turnId, MotorType.kBrushless);
 
@@ -37,24 +37,24 @@ public class ModuleIOReal implements ModuleIO {
         SparkMaxConfig turnConfig = new SparkMaxConfig();
 
         driveConfig
-            .inverted(false)
+            .inverted(true)
             .smartCurrentLimit(40)
             .idleMode(IdleMode.kCoast);
         driveConfig.encoder
-            .positionConversionFactor(drivePositionConversionFactor)
-            .velocityConversionFactor(driveVelocityConversionFactor);
+            .positionConversionFactor(2.0 * Math.PI * wheelRadius / driveGearing)
+            .velocityConversionFactor(2.0 * Math.PI * wheelRadius / driveGearing / 60.0);
         driveConfig.closedLoop
             .p(driveP)
             .i(driveI)
             .d(driveD);
 
         turnConfig
-            .inverted(true)
+            .inverted(false)
             .smartCurrentLimit(40)
             .idleMode(IdleMode.kCoast);
         turnConfig.encoder
-            .positionConversionFactor(turnPositionConversionFactor)
-            .velocityConversionFactor(turnVelocityConversionFactor);
+            .positionConversionFactor(2.0 * Math.PI / turnGearing)
+            .velocityConversionFactor(2.0 * Math.PI / turnGearing / 60.0);
         turnConfig.closedLoop
             .p(turnP)
             .i(turnI)

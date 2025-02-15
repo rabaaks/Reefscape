@@ -15,7 +15,7 @@ import frc.robot.subsystems.drive.EncoderIOReal;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOReal;
 import frc.robot.subsystems.drive.Module;
-import frc.robot.subsystems.drive.ModuleIOReal;
+import frc.robot.subsystems.drive.ModuleIOSparkMax;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
@@ -40,24 +40,24 @@ public class RobotContainer {
     public RobotContainer() {
         switch (currentMode) {
             case REAL:
-                // drive = new Drive(
-                //     new GyroIOReal(11),
-                //     new Module[] {
-                //         new Module(new ModuleIOReal(frontLeftDriveId, frontLeftTurnId), new EncoderIOReal(frontLeftEncoderId, frontLeftOffset), 0),
-                //         new Module(new ModuleIOReal(frontRightDriveId, frontRightTurnId), new EncoderIOReal(frontRightEncoderId, frontRightOffset), 1),
-                //         new Module(new ModuleIOReal(backLeftDriveId, backLeftTurnId), new EncoderIOReal(backLeftEncoderId, backLeftOffset), 2),
-                //         new Module(new ModuleIOReal(backRightDriveId, backRightTurnId), new EncoderIOReal(backRightEncoderId, backRightOffset), 3)
-                //     }
-                // );
                 drive = new Drive(
-                    new GyroIO() {},
+                    new GyroIOReal(gyroId),
                     new Module[] {
-                        new Module(new ModuleIOSim(), new EncoderIO() {}, 0),
-                        new Module(new ModuleIOSim(), new EncoderIO() {}, 1),
-                        new Module(new ModuleIOSim(), new EncoderIO() {}, 2),
-                        new Module(new ModuleIOSim(), new EncoderIO() {}, 3)
+                        new Module(new ModuleIOSparkMax(frontLeftDriveId, frontLeftTurnId), new EncoderIOReal(frontLeftEncoderId, frontLeftOffset), 0),
+                        new Module(new ModuleIOSparkMax(frontRightDriveId, frontRightTurnId), new EncoderIOReal(frontRightEncoderId, frontRightOffset), 1),
+                        new Module(new ModuleIOSparkMax(backLeftDriveId, backLeftTurnId), new EncoderIOReal(backLeftEncoderId, backLeftOffset), 2),
+                        new Module(new ModuleIOSparkMax(backRightDriveId, backRightTurnId), new EncoderIOReal(backRightEncoderId, backRightOffset), 3)
                     }
                 );
+                // drive = new Drive(
+                //     new GyroIO() {},
+                //     new Module[] {
+                //         new Module(new ModuleIOSim(), new EncoderIO() {}, 0),
+                //         new Module(new ModuleIOSim(), new EncoderIO() {}, 1),
+                //         new Module(new ModuleIOSim(), new EncoderIO() {}, 2),
+                //         new Module(new ModuleIOSim(), new EncoderIO() {}, 3)
+                //     }
+                // );
                 elevator = new Elevator(new ElevatorIOReal(leftMotorId, rightMotorId));
                 shooter = new Shooter(new ShooterIOReal(topFlywheelId, bottomFlywheelId));
                 break;
