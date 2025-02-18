@@ -18,11 +18,11 @@ public class DriveConstants {
     public static final double driveGearing = 5.14;
     public static final double turnGearing = 12.8;
 
-    public static final double driveP = 0.0;
+    public static final double driveP = 3.0;
     public static final double driveI = 0.0;
     public static final double driveD = 0.0;
 
-    public static final double turnP = 1.0;
+    public static final double turnP = 12.0;
     public static final double turnI = 0.0;
     public static final double turnD = 0.0;
 
