@@ -5,11 +5,11 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-public class ShooterIOReal implements ShooterIO {
+public class ShooterIOTalonSRX implements ShooterIO {
     private final TalonSRX topMotor;
     private final TalonSRX bottomMotor;
 
-    public ShooterIOReal(int topId, int bottomId) {
+    public ShooterIOTalonSRX(int topId, int bottomId) {
         topMotor = new TalonSRX(topId);
         bottomMotor = new TalonSRX(bottomId);
 

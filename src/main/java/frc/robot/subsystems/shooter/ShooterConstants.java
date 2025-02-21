@@ -7,4 +7,5 @@ public class ShooterConstants {
 
     public static final int topFlywheelId = 21;
     public static final int bottomFlywheelId = 22;
+    public static final int flywheelId = 0;
 }

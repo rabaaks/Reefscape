@@ -7,8 +7,8 @@ public class ElevatorConstants {
     public static final DCMotor motor = DCMotor.getNEO(2);
 
     public static final double mass = Units.lbsToKilograms(30.0); // change to actual weight
-    public static final double radius = Units.inchesToMeters(0.9175);
-    public static final double gearing = 6.75;
+    public static final double radius = Units.inchesToMeters(1.025);
+    public static final double gearing = 5.0;
 
     public static final double maxHeight = Units.inchesToMeters(44.0);
     public static final double minHeight = Units.inchesToMeters(0.0);
@@ -25,9 +25,9 @@ public class ElevatorConstants {
     // public static final double v = 5.87;
     // public static final double a = 0.12;
 
-    public static final double p = 4.1805;
+    public static final double p = 0.0;
     public static final double i = 0.0;
-    public static final double d = 0.71658;
+    public static final double d = 0.0;
 
     public static final double s = 0.27117;
     public static final double g = 0.42059;
@@ -46,7 +46,7 @@ public class ElevatorConstants {
     public static final double velocityConversionFactor = positionConversionFactor / 60.0;
 
     public static final double sysIdMinPosition = 0.1;
-    public static final double sysIdMaxPosition = 0.9;
+    public static final double sysIdMaxPosition = 1.5;
 
     public static final double sysIdRampUp = 2.5;
     public static final double sysIdStep = 5.5;
