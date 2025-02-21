@@ -9,6 +9,9 @@ import static frc.robot.subsystems.drive.DriveConstants.*;
 import static frc.robot.subsystems.elevator.ElevatorConstants.*;
 import static frc.robot.subsystems.shooter.ShooterConstants.*;
 
+import org.photonvision.estimation.TargetModel;
+import org.photonvision.simulation.VisionSystemSim;
+
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.EncoderIO;
 import frc.robot.subsystems.drive.EncoderIOReal;
@@ -41,6 +44,7 @@ public class RobotContainer {
     public RobotContainer() {
         switch (currentMode) {
             case REAL:
+<<<<<<< HEAD
                 // drive = new Drive(
                 //     new GyroIOReal(gyroId),
                 //     new Module[] {
@@ -57,6 +61,15 @@ public class RobotContainer {
                         new Module(new ModuleIOSim(), new EncoderIO() {}, 1),
                         new Module(new ModuleIOSim(), new EncoderIO() {}, 2),
                         new Module(new ModuleIOSim(), new EncoderIO() {}, 3)
+=======
+                drive = new Drive(
+                    new GyroIOReal(gyroId),
+                    new Module[] {
+                        new Module(new ModuleIOSparkMax(frontLeftDriveId, frontLeftTurnId), new EncoderIOReal(frontLeftEncoderId, frontLeftOffset), 0),
+                        new Module(new ModuleIOSparkMax(frontRightDriveId, frontRightTurnId), new EncoderIOReal(frontRightEncoderId, frontRightOffset), 1),
+                        new Module(new ModuleIOSparkMax(backLeftDriveId, backLeftTurnId), new EncoderIOReal(backLeftEncoderId, backLeftOffset), 2),
+                        new Module(new ModuleIOSparkMax(backRightDriveId, backRightTurnId), new EncoderIOReal(backRightEncoderId, backRightOffset), 3)
+>>>>>>> 182943a818d4b5cd022c3cba7ac126a2d51bed4f
                     }
                 );
                 elevator = new Elevator(new ElevatorIOReal(leftMotorId, rightMotorId));
@@ -65,6 +78,7 @@ public class RobotContainer {
             default:
             case SIM:
             case REPLAY:
+
                 drive = new Drive(
                     new GyroIO() {},
                     new Module[] {
@@ -87,9 +101,9 @@ public class RobotContainer {
             new RunCommand(
                 () -> drive.setSpeedsFieldOriented(
                     new ChassisSpeeds(
-                        MathUtil.applyDeadband(-controller.getLeftY(), 0.1) * driveSpeed, 
-                        MathUtil.applyDeadband(-controller.getLeftX(), 0.1) * driveSpeed, 
-                        MathUtil.applyDeadband(-controller.getRightX(), 0.1) * turnSpeed
+                        MathUtil.applyDeadband(-controller.getLeftY(), 0.15) * driveSpeed, 
+                        MathUtil.applyDeadband(-controller.getLeftX(), 0.15) * driveSpeed, 
+                        MathUtil.applyDeadband(-controller.getRightX(), 0.15) * turnSpeed
                     )
                 ),
                 drive
