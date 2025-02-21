@@ -44,7 +44,6 @@ public class RobotContainer {
     public RobotContainer() {
         switch (currentMode) {
             case REAL:
-<<<<<<< HEAD
                 // drive = new Drive(
                 //     new GyroIOReal(gyroId),
                 //     new Module[] {
@@ -61,15 +60,6 @@ public class RobotContainer {
                         new Module(new ModuleIOSim(), new EncoderIO() {}, 1),
                         new Module(new ModuleIOSim(), new EncoderIO() {}, 2),
                         new Module(new ModuleIOSim(), new EncoderIO() {}, 3)
-=======
-                drive = new Drive(
-                    new GyroIOReal(gyroId),
-                    new Module[] {
-                        new Module(new ModuleIOSparkMax(frontLeftDriveId, frontLeftTurnId), new EncoderIOReal(frontLeftEncoderId, frontLeftOffset), 0),
-                        new Module(new ModuleIOSparkMax(frontRightDriveId, frontRightTurnId), new EncoderIOReal(frontRightEncoderId, frontRightOffset), 1),
-                        new Module(new ModuleIOSparkMax(backLeftDriveId, backLeftTurnId), new EncoderIOReal(backLeftEncoderId, backLeftOffset), 2),
-                        new Module(new ModuleIOSparkMax(backRightDriveId, backRightTurnId), new EncoderIOReal(backRightEncoderId, backRightOffset), 3)
->>>>>>> 182943a818d4b5cd022c3cba7ac126a2d51bed4f
                     }
                 );
                 elevator = new Elevator(new ElevatorIOReal(leftMotorId, rightMotorId));
