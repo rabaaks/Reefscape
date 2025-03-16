@@ -34,6 +34,17 @@ public class ElevatorConstants {
         int rightMotorId
     ) {}
 
+    ElevatorConfig protoElevatorConfig = new ElevatorConfig(
+        0.0,
+        0.0,
+        0.0,
+        0.27117,
+        0.42059,
+        6.049,
+        0.75
+        
+    );
+
     public static final DCMotor motor = DCMotor.getNEO(2);
 
     public static final double mass = Units.lbsToKilograms(30.0); // change to actual weight
