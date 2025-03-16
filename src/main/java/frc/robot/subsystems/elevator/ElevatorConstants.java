@@ -4,6 +4,36 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 public class ElevatorConstants {
+    public record ElevatorConfig(
+        double p,
+        double i,
+        double d,
+
+        double s,
+        double g,
+        double v,
+        double a,
+
+        double maxHeight,
+        double minHeight,
+
+        double maxProfileAcceleration,
+        double maxProfileVelocity,
+        double maxProfileVoltage
+    ) {}
+
+    public record ElevatorSimConfig(
+        DCMotor motor,
+        double mass,
+        double radius,
+        double gearing
+    ) {}
+
+    public record ElevatorRealConfig(
+        int leftMotorId,
+        int rightMotorId
+    ) {}
+
     public static final DCMotor motor = DCMotor.getNEO(2);
 
     public static final double mass = Units.lbsToKilograms(30.0); // change to actual weight
@@ -45,8 +75,7 @@ public class ElevatorConstants {
     public static final double positionConversionFactor = 2.0 * Math.PI * radius / gearing;
     public static final double velocityConversionFactor = positionConversionFactor / 60.0;
 
-    public static final double sysIdMinPosition = 0.1;
-    public static final double sysIdMaxPosition = 1.5;
+    public static final double sysIdThreshold = 0.1;
 
     public static final double sysIdRampUp = 2.5;
     public static final double sysIdStep = 5.5;

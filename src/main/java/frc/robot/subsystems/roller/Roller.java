@@ -1,19 +1,20 @@
-package frc.robot.subsystems.shooter;
+package frc.robot.subsystems.roller;
 
-import static frc.robot.subsystems.shooter.ShooterConstants.*;
+import static frc.robot.subsystems.roller.RollerConstants.*;
 
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.shooter.ShooterIOInputsAutoLogged;
 
-public class Shooter extends SubsystemBase {
-    private final ShooterIO io;
+public class Roller extends SubsystemBase {
+    private final RollerIO io;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
     private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(s, v, a);
 
-    public Shooter(ShooterIO io) {
+    public Roller(RollerIO io) {
         this.io = io;
     }
 

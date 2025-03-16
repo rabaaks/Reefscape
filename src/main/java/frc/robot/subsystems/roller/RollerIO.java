@@ -1,8 +1,8 @@
-package frc.robot.subsystems.shooter;
+package frc.robot.subsystems.roller;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public interface ShooterIO {
+public interface RollerIO {
     @AutoLog
     public static class ShooterIOInputs {
         public double[] voltages = new double[] {};

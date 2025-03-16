@@ -1,15 +1,15 @@
-package frc.robot.subsystems.shooter;
+package frc.robot.subsystems.roller;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-public class ShooterIOTalonSRX implements ShooterIO {
+public class RollerIOTalonSRX implements RollerIO {
     private final TalonSRX topMotor;
     private final TalonSRX bottomMotor;
 
-    public ShooterIOTalonSRX(int topId, int bottomId) {
+    public RollerIOTalonSRX(int topId, int bottomId) {
         topMotor = new TalonSRX(topId);
         bottomMotor = new TalonSRX(bottomId);
 

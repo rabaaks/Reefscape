@@ -13,14 +13,14 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-public class ElevatorIOReal implements ElevatorIO {
+public class ElevatorIOSparkMax implements ElevatorIO {
     private final SparkMax leftMotor;
     private final SparkMax rightMotor;
 
     private final RelativeEncoder encoder;
     private final SparkClosedLoopController feedback;
 
-    public ElevatorIOReal(int leftId, int rightId) {
+    public ElevatorIOSparkMax(int leftId, int rightId) {
         leftMotor = new SparkMax(leftId, MotorType.kBrushless);
         rightMotor = new SparkMax(rightId, MotorType.kBrushless);
 

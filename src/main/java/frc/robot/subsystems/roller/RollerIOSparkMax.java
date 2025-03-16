@@ -1,14 +1,14 @@
-package frc.robot.subsystems.shooter;
+package frc.robot.subsystems.roller;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-public class ShooterIOSparkMax implements ShooterIO {
+public class RollerIOSparkMax implements RollerIO {
     private final SparkMax motor;
 
-    public ShooterIOSparkMax(int id) {
+    public RollerIOSparkMax(int id) {
         motor = new SparkMax(id, MotorType.kBrushless);
 
         SparkMaxConfig config = new SparkMaxConfig();

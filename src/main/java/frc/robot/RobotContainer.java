@@ -7,7 +7,7 @@ package frc.robot;
 import static frc.robot.Constants.*;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 import static frc.robot.subsystems.elevator.ElevatorConstants.*;
-import static frc.robot.subsystems.shooter.ShooterConstants.*;
+import static frc.robot.subsystems.roller.RollerConstants.*;
 
 import org.photonvision.estimation.TargetModel;
 import org.photonvision.simulation.VisionSystemSim;
@@ -21,12 +21,12 @@ import frc.robot.subsystems.drive.Module;
 import frc.robot.subsystems.drive.ModuleIOSparkMax;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.elevator.ElevatorIOReal;
+import frc.robot.subsystems.elevator.ElevatorIOSparkMax;
+import frc.robot.subsystems.roller.Roller;
+import frc.robot.subsystems.roller.RollerIO;
+import frc.robot.subsystems.roller.RollerIOSparkMax;
+import frc.robot.subsystems.roller.RollerIOTalonSRX;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterIO;
-import frc.robot.subsystems.shooter.ShooterIOSparkMax;
-import frc.robot.subsystems.shooter.ShooterIOTalonSRX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,7 +37,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 public class RobotContainer {
     private final Drive drive;
     private final Elevator elevator;
-    private final Shooter shooter;
+    private final Roller shooter;
 
     private final CommandXboxController controller = new CommandXboxController(driverControllerPort);
 
@@ -62,8 +62,8 @@ public class RobotContainer {
                         new Module(new ModuleIOSim(), new EncoderIO() {}, 3)
                     }
                 );
-                elevator = new Elevator(new ElevatorIOReal(leftMotorId, rightMotorId));
-                shooter = new Shooter(new ShooterIOSparkMax(flywheelId));
+                elevator = new Elevator(new ElevatorIOSparkMax(leftMotorId, rightMotorId));
+                shooter = new Roller(new RollerIOSparkMax(flywheelId));
                 break;
             default:
             case SIM:
@@ -79,7 +79,7 @@ public class RobotContainer {
                     }
                 );
                 elevator = new Elevator(new ElevatorIOSim());
-                shooter = new Shooter(new ShooterIO() {});
+                shooter = new Roller(new RollerIO() {});
                 break;
         }
 
