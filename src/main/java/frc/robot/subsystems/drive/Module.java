@@ -18,15 +18,17 @@ public class Module {
 
     private final int index;
 
-    private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(driveS, driveV, driveA);
+    private final SimpleMotorFeedforward driveFeedforward;
 
     Rotation2d rawModuleHeading;
 
-    public Module(ModuleIO io, EncoderIO encoderIO, int index) {
+    public Module(ModuleConfig config, ModuleIO io, EncoderIO encoderIO, int index) {
         this.io = io;
         this.encoderIO = encoderIO;
 
         this.index = index;
+
+        driveFeedforward = new SimpleMotorFeedforward(config.driveS(), config.driveV(), config.driveA());
 
         updateInputs();
 

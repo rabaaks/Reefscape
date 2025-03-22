@@ -31,19 +31,27 @@ public class Drive extends SubsystemBase {
         new SwerveModulePosition()
     };
 
-    private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-        new Translation2d[] {
-            new Translation2d(halfWidth, halfWidth),
-            new Translation2d(halfWidth, -halfWidth),
-            new Translation2d(-halfWidth, halfWidth),
-            new Translation2d(-halfWidth, -halfWidth)
-        }
-    );
-    private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, new Rotation2d(), previousPositions, new Pose2d());
+    private final SwerveDriveKinematics kinematics;
+    private final SwerveDrivePoseEstimator poseEstimator;
 
-    public Drive(GyroIO gyroIO, Module[] modules) {
+    private final double maxSpeed;
+
+    public Drive(Config config, GyroIO gyroIO, Module[] modules) {
         this.gyroIO = gyroIO;
         this.modules = modules;
+
+        kinematics = new SwerveDriveKinematics(
+            new Translation2d[] {
+                new Translation2d(config.halfWidth(), config.halfWidth()),
+                new Translation2d(config.halfWidth(), -config.halfWidth()),
+                new Translation2d(-config.halfWidth(), config.halfWidth()),
+                new Translation2d(-config.halfWidth(), -config.halfWidth())
+            }
+        );
+
+        poseEstimator = new SwerveDrivePoseEstimator(kinematics, new Rotation2d(), previousPositions, new Pose2d());
+
+        maxSpeed = config.maxSpeed();
 
         gyroIO.reset();
     }
@@ -99,7 +107,7 @@ public class Drive extends SubsystemBase {
         } else {
             states = kinematics.toSwerveModuleStates(speeds);
         }
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, driveMaxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, maxSpeed);
 
         setStates(states);
     }

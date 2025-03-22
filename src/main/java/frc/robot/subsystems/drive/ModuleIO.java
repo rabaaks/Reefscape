@@ -10,9 +10,9 @@ public interface ModuleIO {
         public double turnPosition = 0.0;
         public double turnVelocity = 0.0;
 
-        public double driveVoltage = 0.0;
+        public double driveOutput = 0.0;
         public double driveCurrent = 0.0;
-        public double turnVoltage = 0.0;
+        public double turnOutput = 0.0;
         public double turnCurrent = 0.0;
     }
 

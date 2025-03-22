@@ -1,5 +1,7 @@
 package frc.robot.subsystems.roller;
 
+import static frc.robot.subsystems.roller.RollerConstants.*;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -9,9 +11,9 @@ public class RollerIOTalonSRX implements RollerIO {
     private final TalonSRX topMotor;
     private final TalonSRX bottomMotor;
 
-    public RollerIOTalonSRX(int topId, int bottomId) {
-        topMotor = new TalonSRX(topId);
-        bottomMotor = new TalonSRX(bottomId);
+    public RollerIOTalonSRX(RealConfig config) {
+        topMotor = new TalonSRX(config.topMotorId());
+        bottomMotor = new TalonSRX(config.bottomMotorId());
 
         topMotor.configPeakCurrentLimit(60);
         bottomMotor.configPeakCurrentLimit(60);
@@ -26,13 +28,13 @@ public class RollerIOTalonSRX implements RollerIO {
     }
 
     @Override
-    public void updateInputs(ShooterIOInputs inputs) {
-        inputs.voltages = new double[] {topMotor.getMotorOutputVoltage(), bottomMotor.getMotorOutputVoltage()};
+    public void updateInputs(RollerIOInputs inputs) {
+        inputs.outputs = new double[] {topMotor.getMotorOutputPercent(), bottomMotor.getMotorOutputPercent()};
         inputs.currents = new double[] {topMotor.getSupplyCurrent(), bottomMotor.getSupplyCurrent()};
     }
 
     @Override
-    public void setVoltage(double voltage) {
-        topMotor.set(ControlMode.PercentOutput, voltage / 12.0);
+    public void set(double output) {
+        topMotor.set(ControlMode.PercentOutput, output);
     }
 }

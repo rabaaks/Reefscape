@@ -2,11 +2,13 @@ package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import frc.robot.subsystems.drive.DriveConstants.GyroConfig;
+
 public class GyroIOReal implements GyroIO {
     Pigeon2 gyro;
 
-    public GyroIOReal(int id) { 
-        gyro = new Pigeon2(id);
+    public GyroIOReal(GyroConfig config) { 
+        gyro = new Pigeon2(config.gyroId());
         gyro.reset();
     }
 

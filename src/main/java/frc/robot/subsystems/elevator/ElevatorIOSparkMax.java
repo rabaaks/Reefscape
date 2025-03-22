@@ -7,6 +7,7 @@ import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -20,26 +21,26 @@ public class ElevatorIOSparkMax implements ElevatorIO {
     private final RelativeEncoder encoder;
     private final SparkClosedLoopController feedback;
 
-    public ElevatorIOSparkMax(int leftId, int rightId) {
-        leftMotor = new SparkMax(leftId, MotorType.kBrushless);
-        rightMotor = new SparkMax(rightId, MotorType.kBrushless);
+    public ElevatorIOSparkMax(IOConfig ioConfig, RealConfig config) {
+        leftMotor = new SparkMax(config.leftMotorId(), MotorType.kBrushless);
+        rightMotor = new SparkMax(config.rightMotorId(), MotorType.kBrushless);
 
-        SparkMaxConfig config = new SparkMaxConfig();
-        config
+        SparkMaxConfig motorConfig = new SparkMaxConfig();
+        motorConfig
             .inverted(false)
             .smartCurrentLimit(60)
             .idleMode(IdleMode.kCoast);
-        config.encoder
-            .positionConversionFactor(positionConversionFactor)
-            .velocityConversionFactor(velocityConversionFactor);
-        config.closedLoop
-            .p(p)
-            .i(i)
-            .d(d);
-        leftMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        config
+        motorConfig.encoder
+            .positionConversionFactor(2.0 * Math.PI * ioConfig.radius() / ioConfig.gearing())
+            .velocityConversionFactor(2.0 * Math.PI * ioConfig.radius() / ioConfig.gearing() / 60.0);
+        motorConfig.closedLoop
+            .p(ioConfig.p())
+            .i(ioConfig.i())
+            .d(ioConfig.d());
+        leftMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        motorConfig
             .follow(leftMotor, true);
-        rightMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        rightMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         encoder = leftMotor.getEncoder();
         feedback = leftMotor.getClosedLoopController();
@@ -49,13 +50,13 @@ public class ElevatorIOSparkMax implements ElevatorIO {
     public void updateInputs(ElevatorIOInputs inputs) {
         inputs.position = encoder.getPosition();
         inputs.velocity = encoder.getVelocity();
-        inputs.voltages = new double[] {leftMotor.getAppliedOutput() * leftMotor.getBusVoltage() , rightMotor.getAppliedOutput() * rightMotor.getBusVoltage()};
+        inputs.outputs = new double[] {leftMotor.getAppliedOutput(), rightMotor.getAppliedOutput()};
         inputs.currents = new double[] {leftMotor.getOutputCurrent(), rightMotor.getOutputCurrent()};
     }
 
     @Override
     public void setPosition(double position, double ffVoltage) {
-        feedback.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0, ffVoltage);
+        feedback.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0, ffVoltage, ArbFFUnits.kPercentOut);
     }
 
     @Override

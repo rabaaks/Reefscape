@@ -23,9 +23,9 @@ public class ModuleIOSparkMax implements ModuleIO {
     private final SparkClosedLoopController driveFeedback;
     private final SparkClosedLoopController turnFeedback;
 
-    public ModuleIOSparkMax(int driveId, int turnId) {
-        driveMotor = new SparkMax(driveId, MotorType.kBrushless);
-        turnMotor = new SparkMax(turnId, MotorType.kBrushless);
+    public ModuleIOSparkMax(ModuleIOConfig ioConfig, ModuleRealConfig config) {
+        driveMotor = new SparkMax(config.driveMotorId(), MotorType.kBrushless);
+        turnMotor = new SparkMax(config.turnMotorId(), MotorType.kBrushless);
 
         driveEncoder = driveMotor.getEncoder();
         turnEncoder = turnMotor.getEncoder();
@@ -41,24 +41,24 @@ public class ModuleIOSparkMax implements ModuleIO {
             .smartCurrentLimit(40)
             .idleMode(IdleMode.kCoast);
         driveConfig.encoder
-            .positionConversionFactor(2.0 * Math.PI * wheelRadius / driveGearing)
-            .velocityConversionFactor(2.0 * Math.PI * wheelRadius / driveGearing / 60.0);
+            .positionConversionFactor(2.0 * Math.PI * ioConfig.wheelRadius() / ioConfig.driveGearing())
+            .velocityConversionFactor(2.0 * Math.PI * ioConfig.wheelRadius() / ioConfig.driveGearing() / 60.0);
         driveConfig.closedLoop
-            .p(driveP)
-            .i(driveI)
-            .d(driveD);
+            .p(ioConfig.driveP())
+            .i(ioConfig.driveI())
+            .d(ioConfig.driveD());
 
         turnConfig
             .inverted(false)
             .smartCurrentLimit(40)
             .idleMode(IdleMode.kCoast);
         turnConfig.encoder
-            .positionConversionFactor(2.0 * Math.PI / turnGearing)
-            .velocityConversionFactor(2.0 * Math.PI / turnGearing / 60.0);
+            .positionConversionFactor(2.0 * Math.PI / ioConfig.turnGearing())
+            .velocityConversionFactor(2.0 * Math.PI / ioConfig.turnGearing() / 60.0);
         turnConfig.closedLoop
-            .p(turnP)
-            .i(turnI)
-            .d(turnD)
+            .p(ioConfig.turnP())
+            .i(ioConfig.turnI())
+            .d(ioConfig.turnD())
             .positionWrappingInputRange(-Math.PI, Math.PI)
             .positionWrappingEnabled(true);
         
@@ -73,8 +73,8 @@ public class ModuleIOSparkMax implements ModuleIO {
         inputs.driveVelocity = driveEncoder.getVelocity();
         inputs.turnVelocity = turnEncoder.getVelocity();
 
-        inputs.driveVoltage = driveMotor.getAppliedOutput() * driveMotor.getBusVoltage();
-        inputs.turnVoltage = turnMotor.getAppliedOutput() * turnMotor.getBusVoltage();
+        inputs.driveOutput = driveMotor.getAppliedOutput();
+        inputs.turnOutput = turnMotor.getAppliedOutput();
         inputs.driveCurrent = driveMotor.getOutputCurrent();
         inputs.turnCurrent = turnMotor.getOutputCurrent();
     }

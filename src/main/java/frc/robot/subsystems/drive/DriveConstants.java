@@ -4,58 +4,107 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 public class DriveConstants {
-    public static final double driveMaxSpeed = 4.0;
+    public record Config(
+        double maxSpeed,
+        double halfWidth
+    ) {}
 
-    public static final double driveSpeed = 3.0;
-    public static final double turnSpeed = 4.5;
+    public record GyroConfig(
+        int gyroId
+    ) {}
 
-    public static final DCMotor driveMotor = DCMotor.getNEO(1);
-    public static final DCMotor turnMotor = DCMotor.getNEO(1);
+    public record ModuleConfig(
+        double driveS,
+        double driveV,
+        double driveA,
 
-    public static final double driveMOI = 0.02;
-    public static final double turnMOI = 0.005;
+        double turnS,
+        double turnV,
+        double turnA
+    ) {}
 
-    public static final double driveGearing = 5.14;
-    public static final double turnGearing = 12.8;
+    public record ModuleIOConfig(
+        double driveP,
+        double driveI,
+        double driveD,
 
-    public static final double driveP = 3.0;
-    public static final double driveI = 0.0;
-    public static final double driveD = 0.0;
+        double turnP,
+        double turnI,
+        double turnD,
 
-    public static final double turnP = 12.0;
-    public static final double turnI = 0.0;
-    public static final double turnD = 0.0;
+        double wheelRadius,
 
-    public static final double driveS = 0.0;
-    public static final double driveV = 2.0;
-    public static final double driveA = 0.0;
+        double driveGearing,
+        double turnGearing
+    ) {}
 
-    public static final double turnS = 0.0;
-    public static final double turnV = 0.0;
-    public static final double turnA = 0.0;
+    public record ModuleSimConfig(
+        DCMotor driveMotor,
+        DCMotor turnMotor,
 
-    public static final double wheelRadius = Units.inchesToMeters(2.0);
-    public static final double halfWidth = Units.inchesToMeters(10.0);
+        double driveMOI,
+        double turnMOI
+    ) {}
 
-    public static final int frontLeftDriveId = 1;
-    public static final int frontLeftTurnId =  2;
-    public static final int frontLeftEncoderId = 1;
-    public static final double frontLeftOffset = 4.3;
+    public record ModuleRealConfig(
+        int driveMotorId,
+        int turnMotorId
+    ) {}
 
-    public static final int frontRightDriveId = 3;
-    public static final int frontRightTurnId = 4;
-    public static final int frontRightEncoderId = 0;
-    public static final double frontRightOffset = 4.9;
+    public record EncoderRealConfig(
+        int encoderId,
+        double encoderOffset
+    ) {}
 
-    public static final int backLeftDriveId = 5;
-    public static final int backLeftTurnId = 6;
-    public static final int backLeftEncoderId = 2;
-    public static final double backLeftOffset = 3.9;
+    public static final Config protoConfig = new Config(
+        4.0,
+        Units.inchesToMeters(10.0)
+    );
 
-    public static final int backRightDriveId = 7;
-    public static final int backRightTurnId = 8;
-    public static final int backRightEncoderId = 3;
-    public static final double backRightOffset = 3.6;
+    public static final GyroConfig protoGyroConfig = new GyroConfig(
+        9
+    );
 
-    public static final int gyroId = 9;
+    public static final ModuleConfig protoModuleConfig = new ModuleConfig(
+        0.0,
+        2.0,
+        0.0,
+
+        0.0,
+        0.0,
+        0.0
+    );
+
+    public static final ModuleIOConfig protoModuleIOConfig = new ModuleIOConfig(
+        0.3,
+        0.0,
+        0.0,
+
+        1.0,
+        0.0,
+        0.0,
+
+        Units.inchesToMeters(2.0),
+
+        5.14,
+        12.8
+    );
+
+    public static final ModuleSimConfig protoModuleSimConfig = new ModuleSimConfig(
+        DCMotor.getNEO(1),
+        DCMotor.getNEO(1),
+
+        0.02,
+        0.005
+    );
+
+    public static final ModuleRealConfig protoFrontLeftModuleRealConfig = new ModuleRealConfig(1, 2);
+    public static final ModuleRealConfig protoFrontRightModuleRealConfig = new ModuleRealConfig(3, 4);
+    public static final ModuleRealConfig protoBackLeftModuleRealConfig = new ModuleRealConfig(5, 6);
+    public static final ModuleRealConfig protoBackRightModuleRealConfig = new ModuleRealConfig(7, 8);
+
+    public static final EncoderRealConfig protoFrontLeftEncoderRealConfig = new EncoderRealConfig(1, 4.3);
+    public static final EncoderRealConfig protoFrontRightEncoderRealConfig = new EncoderRealConfig(0, 4.9);
+    public static final EncoderRealConfig protoBackLeftEncoderRealConfig = new EncoderRealConfig(2, 3.9);
+    public static final EncoderRealConfig protoBackRightEncoderRealConfig = new EncoderRealConfig(3, 3.6);
 }

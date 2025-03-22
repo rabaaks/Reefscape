@@ -4,15 +4,11 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.*;
-import static frc.robot.subsystems.drive.DriveConstants.*;
-import static frc.robot.subsystems.elevator.ElevatorConstants.*;
-import static frc.robot.subsystems.roller.RollerConstants.*;
-
 import org.photonvision.estimation.TargetModel;
 import org.photonvision.simulation.VisionSystemSim;
 
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.EncoderIO;
 import frc.robot.subsystems.drive.EncoderIOReal;
 import frc.robot.subsystems.drive.GyroIO;
@@ -21,10 +17,11 @@ import frc.robot.subsystems.drive.Module;
 import frc.robot.subsystems.drive.ModuleIOSparkMax;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIOSparkMax;
 import frc.robot.subsystems.roller.Roller;
+import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerIO;
-import frc.robot.subsystems.roller.RollerIOSparkMax;
 import frc.robot.subsystems.roller.RollerIOTalonSRX;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import edu.wpi.first.math.MathUtil;
@@ -37,12 +34,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 public class RobotContainer {
     private final Drive drive;
     private final Elevator elevator;
-    private final Roller shooter;
+    private final Roller roller;
 
-    private final CommandXboxController controller = new CommandXboxController(driverControllerPort);
+    private final CommandXboxController controller = new CommandXboxController(Constants.driverControllerPort);
 
     public RobotContainer() {
-        switch (currentMode) {
+        switch (Constants.currentMode) {
             case REAL:
                 // drive = new Drive(
                 //     new GyroIOReal(gyroId),
@@ -54,32 +51,33 @@ public class RobotContainer {
                 //     }
                 // );
                 drive = new Drive(
-                    new GyroIO() {},
+                    DriveConstants.protoConfig,
+                    new GyroIOReal(DriveConstants.protoGyroConfig),
                     new Module[] {
-                        new Module(new ModuleIOSim(), new EncoderIO() {}, 0),
-                        new Module(new ModuleIOSim(), new EncoderIO() {}, 1),
-                        new Module(new ModuleIOSim(), new EncoderIO() {}, 2),
-                        new Module(new ModuleIOSim(), new EncoderIO() {}, 3)
+                        new Module(DriveConstants.protoModuleConfig, new ModuleIOSparkMax(DriveConstants.protoModuleIOConfig, DriveConstants.protoFrontLeftModuleRealConfig), new EncoderIOReal(DriveConstants.protoFrontLeftEncoderRealConfig), 0),
+                        new Module(DriveConstants.protoModuleConfig, new ModuleIOSparkMax(DriveConstants.protoModuleIOConfig, DriveConstants.protoFrontRightModuleRealConfig), new EncoderIOReal(DriveConstants.protoFrontRightEncoderRealConfig), 1),
+                        new Module(DriveConstants.protoModuleConfig, new ModuleIOSparkMax(DriveConstants.protoModuleIOConfig, DriveConstants.protoBackLeftModuleRealConfig), new EncoderIOReal(DriveConstants.protoBackLeftEncoderRealConfig), 2),
+                        new Module(DriveConstants.protoModuleConfig, new ModuleIOSparkMax(DriveConstants.protoModuleIOConfig, DriveConstants.protoBackRightModuleRealConfig), new EncoderIOReal(DriveConstants.protoBackRightEncoderRealConfig), 3)
                     }
                 );
-                elevator = new Elevator(new ElevatorIOSparkMax(leftMotorId, rightMotorId));
-                shooter = new Roller(new RollerIOSparkMax(flywheelId));
+                elevator = new Elevator(ElevatorConstants.protoConfig, new ElevatorIOSparkMax(ElevatorConstants.protoIOConfig, ElevatorConstants.protoRealConfig));
+                roller = new Roller(RollerConstants.protoConfig, new RollerIOTalonSRX(RollerConstants.protoRealConfig));
                 break;
             default:
             case SIM:
             case REPLAY:
-
                 drive = new Drive(
+                    DriveConstants.protoConfig,
                     new GyroIO() {},
                     new Module[] {
-                        new Module(new ModuleIOSim(), new EncoderIO() {}, 0),
-                        new Module(new ModuleIOSim(), new EncoderIO() {}, 1),
-                        new Module(new ModuleIOSim(), new EncoderIO() {}, 2),
-                        new Module(new ModuleIOSim(), new EncoderIO() {}, 3)
+                        new Module(DriveConstants.protoModuleConfig, new ModuleIOSim(DriveConstants.protoModuleIOConfig, DriveConstants.protoModuleSimConfig), new EncoderIO() {}, 0),
+                        new Module(DriveConstants.protoModuleConfig, new ModuleIOSim(DriveConstants.protoModuleIOConfig, DriveConstants.protoModuleSimConfig), new EncoderIO() {}, 1),
+                        new Module(DriveConstants.protoModuleConfig, new ModuleIOSim(DriveConstants.protoModuleIOConfig, DriveConstants.protoModuleSimConfig), new EncoderIO() {}, 2),
+                        new Module(DriveConstants.protoModuleConfig, new ModuleIOSim(DriveConstants.protoModuleIOConfig, DriveConstants.protoModuleSimConfig), new EncoderIO() {}, 3)
                     }
                 );
-                elevator = new Elevator(new ElevatorIOSim());
-                shooter = new Roller(new RollerIO() {});
+                elevator = new Elevator(ElevatorConstants.protoConfig, new ElevatorIOSim(ElevatorConstants.protoIOConfig, ElevatorConstants.protoSimConfig));
+                roller = new Roller(RollerConstants.protoConfig, new RollerIO() {});
                 break;
         }
 
@@ -91,9 +89,9 @@ public class RobotContainer {
             new RunCommand(
                 () -> drive.setSpeedsFieldOriented(
                     new ChassisSpeeds(
-                        MathUtil.applyDeadband(-controller.getLeftY(), 0.15) * driveSpeed, 
-                        MathUtil.applyDeadband(-controller.getLeftX(), 0.15) * driveSpeed, 
-                        MathUtil.applyDeadband(-controller.getRightX(), 0.15) * turnSpeed
+                        MathUtil.applyDeadband(-controller.getLeftY(), 0.15) * 3.0, 
+                        MathUtil.applyDeadband(-controller.getLeftX(), 0.15) * 3.0, 
+                        MathUtil.applyDeadband(-controller.getRightX(), 0.15) * 4.5
                     )
                 ),
                 drive
@@ -118,16 +116,16 @@ public class RobotContainer {
             )
         );
 
-        shooter.setDefaultCommand(
+        roller.setDefaultCommand(
             new RunCommand(
                 () -> {
-                    shooter.setVelocity(controller.getRightTriggerAxis() * 12.0);
+                    roller.setVelocity(controller.getRightTriggerAxis() * 12.0);
                 },
-                shooter
+                roller
             )
         );
 
-        controller.a().whileTrue(elevator.sysIdRoutine());
+        controller.a().whileTrue(elevator.sysIdRoutine(0.9, 0.1));
     }
 
     public Command getAutonomousCommand() {

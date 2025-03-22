@@ -4,12 +4,12 @@ import org.littletonrobotics.junction.AutoLog;
 
 public interface RollerIO {
     @AutoLog
-    public static class ShooterIOInputs {
-        public double[] voltages = new double[] {};
+    public static class RollerIOInputs {
+        public double[] outputs = new double[] {};
         public double[] currents = new double[] {};
     }
 
-    public default void updateInputs(ShooterIOInputs inputs) {}
+    public default void updateInputs(RollerIOInputs inputs) {}
 
-    public default void setVoltage(double voltage) {}
+    public default void set(double output) {}
 }

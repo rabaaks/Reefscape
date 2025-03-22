@@ -1,5 +1,7 @@
 package frc.robot.subsystems.elevator;
 
+import static frc.robot.subsystems.elevator.ElevatorConstants.*;
+
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ElevatorIO {
@@ -8,7 +10,7 @@ public interface ElevatorIO {
         public double position = 0.0;
         public double velocity = 0.0;
 
-        public double[] voltages = new double[] {};
+        public double[] outputs = new double[] {};
         public double[] currents = new double[] {};
     }
 

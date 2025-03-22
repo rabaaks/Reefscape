@@ -8,23 +8,32 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class ModuleIOSim implements ModuleIO {
-    private DCMotorSim driveSim = new DCMotorSim(
-        LinearSystemId.createDCMotorSystem(driveMotor, driveMOI, driveGearing),
-        driveMotor
-    );
+    private DCMotorSim driveSim;
+    private DCMotorSim turnSim;
 
-    private DCMotorSim turnSim = new DCMotorSim(
-        LinearSystemId.createDCMotorSystem(turnMotor, turnMOI, turnGearing),
-        turnMotor
-    );
-
-    private PIDController driveFeedback = new PIDController(driveP, driveI, driveD);
+    private PIDController driveFeedback;
     private double driveFeedforward = 0.0;
 
-    private PIDController turnFeedback = new PIDController(turnP, turnI, turnD);
+    private PIDController turnFeedback;
     private double turnFeedforward = 0.0;
 
-    public ModuleIOSim() {
+    private double wheelRadius;
+
+    public ModuleIOSim(ModuleIOConfig ioConfig, ModuleSimConfig config) {
+        driveSim = new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(config.driveMotor(), config.driveMOI(), ioConfig.driveGearing()),
+            config.driveMotor()
+        );
+        turnSim = new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(config.turnMotor(), config.turnMOI(), ioConfig.turnGearing()),
+            config.turnMotor()
+        );
+
+        driveFeedback = new PIDController(ioConfig.driveP(), ioConfig.driveI(), ioConfig.driveD());
+        turnFeedback = new PIDController(ioConfig.turnP(), ioConfig.turnI(), ioConfig.turnD());
+
+        wheelRadius = ioConfig.wheelRadius();
+
         turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
     }
 
@@ -32,13 +41,13 @@ public class ModuleIOSim implements ModuleIO {
     public void updateInputs(ModuleIOInputs inputs) {
         double driveVelocity = driveSim.getAngularVelocityRadPerSec() * wheelRadius;
         double turnPosition = turnSim.getAngularPositionRad();
-        double driveVoltage = driveFeedforward + driveFeedback.calculate(driveVelocity);
-        double turnVoltage = turnFeedforward + turnFeedback.calculate(turnPosition);
+        double driveOutput = driveFeedforward + driveFeedback.calculate(driveVelocity);
+        double turnOutput = turnFeedforward + turnFeedback.calculate(turnPosition);
 
-        driveSim.setInputVoltage(MathUtil.clamp(driveVoltage, -12.0, 12.0));
+        driveSim.setInputVoltage(MathUtil.clamp(driveOutput, -1.0, 1.0) * 12.0);
         driveSim.update(0.02);
 
-        turnSim.setInputVoltage(MathUtil.clamp(turnVoltage, -12.0, 12.0));
+        turnSim.setInputVoltage(MathUtil.clamp(turnOutput, -1.0, 1.0) * 12.0);
         turnSim.update(0.02);
 
         inputs.driveVelocity = driveVelocity;
@@ -46,8 +55,8 @@ public class ModuleIOSim implements ModuleIO {
         inputs.drivePosition = driveSim.getAngularPositionRad() * wheelRadius; 
         inputs.turnPosition = turnPosition;
 
-        inputs.driveVoltage = driveVoltage;
-        inputs.turnVoltage = turnVoltage;
+        inputs.driveOutput = driveOutput;
+        inputs.turnOutput = turnOutput;
         inputs.driveCurrent = driveSim.getCurrentDrawAmps();
         inputs.turnCurrent = turnSim.getCurrentDrawAmps();
     }
