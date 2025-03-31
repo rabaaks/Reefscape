@@ -13,6 +13,10 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import frc.robot.Constants.FeedbackConfig;
+import frc.robot.subsystems.drive.DriveConstants.ModuleIOConfig;
+import frc.robot.subsystems.drive.DriveConstants.ModuleRealConfig;
+
 public class ModuleIOSparkMax implements ModuleIO {
     private SparkMax driveMotor;
     private SparkMax turnMotor;
@@ -43,10 +47,6 @@ public class ModuleIOSparkMax implements ModuleIO {
         driveConfig.encoder
             .positionConversionFactor(2.0 * Math.PI * ioConfig.wheelRadius() / ioConfig.driveGearing())
             .velocityConversionFactor(2.0 * Math.PI * ioConfig.wheelRadius() / ioConfig.driveGearing() / 60.0);
-        driveConfig.closedLoop
-            .p(ioConfig.driveP())
-            .i(ioConfig.driveI())
-            .d(ioConfig.driveD());
 
         turnConfig
             .inverted(false)
@@ -56,9 +56,6 @@ public class ModuleIOSparkMax implements ModuleIO {
             .positionConversionFactor(2.0 * Math.PI / ioConfig.turnGearing())
             .velocityConversionFactor(2.0 * Math.PI / ioConfig.turnGearing() / 60.0);
         turnConfig.closedLoop
-            .p(ioConfig.turnP())
-            .i(ioConfig.turnI())
-            .d(ioConfig.turnD())
             .positionWrappingInputRange(-Math.PI, Math.PI)
             .positionWrappingEnabled(true);
         
@@ -73,8 +70,8 @@ public class ModuleIOSparkMax implements ModuleIO {
         inputs.driveVelocity = driveEncoder.getVelocity();
         inputs.turnVelocity = turnEncoder.getVelocity();
 
-        inputs.driveOutput = driveMotor.getAppliedOutput();
-        inputs.turnOutput = turnMotor.getAppliedOutput();
+        inputs.driveVoltage = driveMotor.getAppliedOutput() * driveMotor.getBusVoltage();
+        inputs.turnVoltage = turnMotor.getAppliedOutput() * turnMotor.getBusVoltage();
         inputs.driveCurrent = driveMotor.getOutputCurrent();
         inputs.turnCurrent = turnMotor.getOutputCurrent();
     }
@@ -92,5 +89,27 @@ public class ModuleIOSparkMax implements ModuleIO {
     @Override
     public void resetPosition(double position) {
         turnEncoder.setPosition(position);
+    }
+
+    @Override
+    public void setDriveFeedback(FeedbackConfig config) {
+        SparkMaxConfig motorConfig = new SparkMaxConfig();
+        motorConfig.closedLoop
+            .p(config.p())
+            .i(config.i())
+            .d(config.d());
+        
+        driveMotor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    }
+
+    @Override
+    public void setTurnFeedback(FeedbackConfig config) {
+        SparkMaxConfig motorConfig = new SparkMaxConfig();
+        motorConfig.closedLoop
+            .p(config.p())
+            .i(config.i())
+            .d(config.d());
+        
+        turnMotor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     }
 }

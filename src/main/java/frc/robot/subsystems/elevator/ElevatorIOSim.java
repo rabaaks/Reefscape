@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import frc.robot.Constants.FeedbackConfig;
 
 public class ElevatorIOSim implements ElevatorIO {
 
@@ -26,20 +27,20 @@ public class ElevatorIOSim implements ElevatorIO {
             ioConfig.minHeight()
         );
 
-        feedback = new PIDController(ioConfig.p(), ioConfig.i(), ioConfig.d());
+        feedback = new PIDController(0.0, 0.0, 0.0);
     }
     
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
         double position = sim.getPositionMeters();
 
-        double output = MathUtil.clamp(feedforward + feedback.calculate(position), -1.0, 1.0);
-        sim.setInputVoltage(output * 12.0);
+        double voltage = MathUtil.clamp(feedforward + feedback.calculate(position) * 12.0, -12.0, 12.0);
+        sim.setInputVoltage(voltage);
         sim.update(0.02);
 
         inputs.position = position;
         inputs.velocity = sim.getVelocityMetersPerSecond();
-        inputs.outputs = new double[] {output};
+        inputs.voltages = new double[] {voltage};
         inputs.currents = new double[] {sim.getCurrentDrawAmps()};
     }
 
@@ -47,5 +48,12 @@ public class ElevatorIOSim implements ElevatorIO {
     public void setPosition(double position, double ffVoltage) {
         feedforward = ffVoltage;
         feedback.setSetpoint(position);
+    }
+
+    @Override
+    public void setFeedback(FeedbackConfig feedbackConfig) {
+        feedback.setP(feedbackConfig.p());
+        feedback.setI(feedbackConfig.i());
+        feedback.setD(feedbackConfig.d());
     }
 }

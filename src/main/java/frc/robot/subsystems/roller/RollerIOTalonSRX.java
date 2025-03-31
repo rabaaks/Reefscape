@@ -29,12 +29,12 @@ public class RollerIOTalonSRX implements RollerIO {
 
     @Override
     public void updateInputs(RollerIOInputs inputs) {
-        inputs.outputs = new double[] {topMotor.getMotorOutputPercent(), bottomMotor.getMotorOutputPercent()};
+        inputs.voltages = new double[] {topMotor.getMotorOutputVoltage(), bottomMotor.getMotorOutputVoltage()};
         inputs.currents = new double[] {topMotor.getSupplyCurrent(), bottomMotor.getSupplyCurrent()};
     }
 
     @Override
-    public void set(double output) {
-        topMotor.set(ControlMode.PercentOutput, output);
+    public void setVoltage(double output) {
+        topMotor.set(ControlMode.PercentOutput, output / topMotor.getBusVoltage());
     }
 }

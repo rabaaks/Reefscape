@@ -30,6 +30,6 @@ public class Roller extends SubsystemBase {
 
     public void setVelocity(double velocity) {
         Logger.recordOutput("Shooter/VelocitySetpoint", velocity);
-        io.set(feedforward.calculate(velocity));
+        io.setVoltage(feedforward.calculate(velocity));
     }
 }

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drive;
 
+import static frc.robot.Constants.*;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import edu.wpi.first.math.MathUtil;
@@ -29,8 +30,8 @@ public class ModuleIOSim implements ModuleIO {
             config.turnMotor()
         );
 
-        driveFeedback = new PIDController(ioConfig.driveP(), ioConfig.driveI(), ioConfig.driveD());
-        turnFeedback = new PIDController(ioConfig.turnP(), ioConfig.turnI(), ioConfig.turnD());
+        driveFeedback = new PIDController(0.0, 0.0, 0.0);
+        turnFeedback = new PIDController(0.0, 0.0, 0.0);
 
         wheelRadius = ioConfig.wheelRadius();
 
@@ -55,8 +56,8 @@ public class ModuleIOSim implements ModuleIO {
         inputs.drivePosition = driveSim.getAngularPositionRad() * wheelRadius; 
         inputs.turnPosition = turnPosition;
 
-        inputs.driveOutput = driveOutput;
-        inputs.turnOutput = turnOutput;
+        inputs.driveVoltage = driveOutput;
+        inputs.turnVoltage = turnOutput;
         inputs.driveCurrent = driveSim.getCurrentDrawAmps();
         inputs.turnCurrent = turnSim.getCurrentDrawAmps();
     }
@@ -71,5 +72,19 @@ public class ModuleIOSim implements ModuleIO {
     public void setTurnPosition(double position, double ffVoltage) {
         turnFeedforward = ffVoltage;
         turnFeedback.setSetpoint(position);
+    }
+
+    @Override
+    public void setDriveFeedback(FeedbackConfig config) {
+        driveFeedback.setP(config.p());
+        driveFeedback.setI(config.i());
+        driveFeedback.setD(config.d());
+    }
+
+    @Override
+    public void setTurnFeedback(FeedbackConfig config) {
+        turnFeedback.setP(config.p());
+        turnFeedback.setI(config.i());
+        turnFeedback.setD(config.d());
     }
 }

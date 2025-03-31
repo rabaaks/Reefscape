@@ -1,37 +1,39 @@
 package frc.robot.subsystems.drive;
 
+import static frc.robot.Constants.*;
+
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 public class DriveConstants {
     public record Config(
         double maxSpeed,
-        double halfWidth
+        Translation2d[] translations,
+        FeedbackConfig driveFeedback,
+        FeedbackConfig turnFeedback,
+        double maxDriveProfileVelocity,
+        double maxDriveProfileAcceleration,
+        double maxTurnProfileVelocity,
+        double maxTurnProfileAcceleration,
+        FeedforwardConfig moduleDriveFeedforward,
+        FeedbackConfig moduleDriveFeedback,
+        FeedbackConfig moduleTurnFeedback
     ) {}
 
     public record GyroConfig(
         int gyroId
     ) {}
 
-    public record ModuleConfig(
-        double driveS,
-        double driveV,
-        double driveA,
-
-        double turnS,
-        double turnV,
-        double turnA
-    ) {}
-
     public record ModuleIOConfig(
-        double driveP,
-        double driveI,
-        double driveD,
-
-        double turnP,
-        double turnI,
-        double turnD,
-
         double wheelRadius,
 
         double driveGearing,
@@ -56,34 +58,53 @@ public class DriveConstants {
         double encoderOffset
     ) {}
 
+    public record CameraIOConfig(
+        Transform3d robotToCamera,
+        AprilTagFieldLayout aprilTagFieldLayout
+    ) {}
+
+    public record CameraRealConfig(
+        String name
+    ) {}
+
     public static final Config protoConfig = new Config(
         4.0,
-        Units.inchesToMeters(10.0)
+        new Translation2d[] {
+                new Translation2d(0.254, 0.254),
+                new Translation2d(-0.254, -0.254)/* ,*/
+                // new Translation2d(-0.254, 0.254),
+                // new Translation2d(-0.254, -0.254)
+        },
+        new FeedbackConfig(1, 0, 0),
+        new FeedbackConfig(1, 0, 0),
+
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+
+        new FeedforwardConfig(
+            0.0,
+            0.0,
+            2.0,
+            0.0
+        ),
+        new FeedbackConfig(
+            0.3,
+            0.0,
+            0.0
+        ),
+        new FeedbackConfig(
+            1.0,
+            0.0,
+            0.0
+        )
     );
 
     public static final GyroConfig protoGyroConfig = new GyroConfig(
         9
     );
-
-    public static final ModuleConfig protoModuleConfig = new ModuleConfig(
-        0.0,
-        2.0,
-        0.0,
-
-        0.0,
-        0.0,
-        0.0
-    );
-
     public static final ModuleIOConfig protoModuleIOConfig = new ModuleIOConfig(
-        0.3,
-        0.0,
-        0.0,
-
-        1.0,
-        0.0,
-        0.0,
-
         Units.inchesToMeters(2.0),
 
         5.14,
@@ -107,4 +128,18 @@ public class DriveConstants {
     public static final EncoderRealConfig protoFrontRightEncoderRealConfig = new EncoderRealConfig(0, 4.9);
     public static final EncoderRealConfig protoBackLeftEncoderRealConfig = new EncoderRealConfig(2, 3.9);
     public static final EncoderRealConfig protoBackRightEncoderRealConfig = new EncoderRealConfig(3, 3.6);
+
+    public static final CameraIOConfig protoCameraIOConfig = new CameraIOConfig(
+        new Transform3d(),
+        AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField)
+    );
+    public static final CameraRealConfig protoCameraRealConfig = new CameraRealConfig(
+        "Android_Webcam"
+    );
+
+    public record VisionResult(
+        Pose2d pose,
+        double time,
+        Matrix<N3, N1> stdDevs
+    ) {}
 }

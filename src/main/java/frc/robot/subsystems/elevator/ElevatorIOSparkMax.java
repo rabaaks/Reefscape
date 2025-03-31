@@ -12,6 +12,9 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
+import frc.robot.Constants.FeedbackConfig;
+
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class ElevatorIOSparkMax implements ElevatorIO {
@@ -33,10 +36,6 @@ public class ElevatorIOSparkMax implements ElevatorIO {
         motorConfig.encoder
             .positionConversionFactor(2.0 * Math.PI * ioConfig.radius() / ioConfig.gearing())
             .velocityConversionFactor(2.0 * Math.PI * ioConfig.radius() / ioConfig.gearing() / 60.0);
-        motorConfig.closedLoop
-            .p(ioConfig.p())
-            .i(ioConfig.i())
-            .d(ioConfig.d());
         leftMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         motorConfig
             .follow(leftMotor, true);
@@ -50,17 +49,29 @@ public class ElevatorIOSparkMax implements ElevatorIO {
     public void updateInputs(ElevatorIOInputs inputs) {
         inputs.position = encoder.getPosition();
         inputs.velocity = encoder.getVelocity();
-        inputs.outputs = new double[] {leftMotor.getAppliedOutput(), rightMotor.getAppliedOutput()};
+        inputs.voltages = new double[] {leftMotor.getAppliedOutput() * leftMotor.getBusVoltage(), rightMotor.getAppliedOutput() * rightMotor.getBusVoltage()};
         inputs.currents = new double[] {leftMotor.getOutputCurrent(), rightMotor.getOutputCurrent()};
     }
 
     @Override
     public void setPosition(double position, double ffVoltage) {
-        feedback.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0, ffVoltage, ArbFFUnits.kPercentOut);
+        feedback.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0, ffVoltage);
     }
 
     @Override
     public void reset() {
         encoder.setPosition(0.0);
+    }
+
+    @Override
+    public void setFeedback(FeedbackConfig feedbackConfig) {
+        SparkMaxConfig pidConfig = new SparkMaxConfig();
+        pidConfig.closedLoop
+            .p(feedbackConfig.p())
+            .i(feedbackConfig.i())
+            .d(feedbackConfig.d());
+        
+        leftMotor.configure(pidConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+        rightMotor.configure(pidConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     }
 }

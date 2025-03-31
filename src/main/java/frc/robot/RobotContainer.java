@@ -7,6 +7,8 @@ package frc.robot;
 import org.photonvision.estimation.TargetModel;
 import org.photonvision.simulation.VisionSystemSim;
 
+import frc.robot.subsystems.drive.Camera;
+import frc.robot.subsystems.drive.CameraIOReal;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.EncoderIO;
@@ -25,6 +27,8 @@ import frc.robot.subsystems.roller.RollerIO;
 import frc.robot.subsystems.roller.RollerIOTalonSRX;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -54,11 +58,12 @@ public class RobotContainer {
                     DriveConstants.protoConfig,
                     new GyroIOReal(DriveConstants.protoGyroConfig),
                     new Module[] {
-                        new Module(DriveConstants.protoModuleConfig, new ModuleIOSparkMax(DriveConstants.protoModuleIOConfig, DriveConstants.protoFrontLeftModuleRealConfig), new EncoderIOReal(DriveConstants.protoFrontLeftEncoderRealConfig), 0),
-                        new Module(DriveConstants.protoModuleConfig, new ModuleIOSparkMax(DriveConstants.protoModuleIOConfig, DriveConstants.protoFrontRightModuleRealConfig), new EncoderIOReal(DriveConstants.protoFrontRightEncoderRealConfig), 1),
-                        new Module(DriveConstants.protoModuleConfig, new ModuleIOSparkMax(DriveConstants.protoModuleIOConfig, DriveConstants.protoBackLeftModuleRealConfig), new EncoderIOReal(DriveConstants.protoBackLeftEncoderRealConfig), 2),
-                        new Module(DriveConstants.protoModuleConfig, new ModuleIOSparkMax(DriveConstants.protoModuleIOConfig, DriveConstants.protoBackRightModuleRealConfig), new EncoderIOReal(DriveConstants.protoBackRightEncoderRealConfig), 3)
-                    }
+                        new Module(new ModuleIOSparkMax(DriveConstants.protoModuleIOConfig, DriveConstants.protoFrontLeftModuleRealConfig), new EncoderIOReal(DriveConstants.protoFrontLeftEncoderRealConfig), 0),
+                        new Module(new ModuleIOSparkMax(DriveConstants.protoModuleIOConfig, DriveConstants.protoFrontRightModuleRealConfig), new EncoderIOReal(DriveConstants.protoFrontRightEncoderRealConfig), 1),
+                        new Module(new ModuleIOSparkMax(DriveConstants.protoModuleIOConfig, DriveConstants.protoBackLeftModuleRealConfig), new EncoderIOReal(DriveConstants.protoBackLeftEncoderRealConfig), 2),
+                        new Module(new ModuleIOSparkMax(DriveConstants.protoModuleIOConfig, DriveConstants.protoBackRightModuleRealConfig), new EncoderIOReal(DriveConstants.protoBackRightEncoderRealConfig), 3)
+                    },
+                    new Camera[] {}
                 );
                 elevator = new Elevator(ElevatorConstants.protoConfig, new ElevatorIOSparkMax(ElevatorConstants.protoIOConfig, ElevatorConstants.protoRealConfig));
                 roller = new Roller(RollerConstants.protoConfig, new RollerIOTalonSRX(RollerConstants.protoRealConfig));
@@ -70,10 +75,13 @@ public class RobotContainer {
                     DriveConstants.protoConfig,
                     new GyroIO() {},
                     new Module[] {
-                        new Module(DriveConstants.protoModuleConfig, new ModuleIOSim(DriveConstants.protoModuleIOConfig, DriveConstants.protoModuleSimConfig), new EncoderIO() {}, 0),
-                        new Module(DriveConstants.protoModuleConfig, new ModuleIOSim(DriveConstants.protoModuleIOConfig, DriveConstants.protoModuleSimConfig), new EncoderIO() {}, 1),
-                        new Module(DriveConstants.protoModuleConfig, new ModuleIOSim(DriveConstants.protoModuleIOConfig, DriveConstants.protoModuleSimConfig), new EncoderIO() {}, 2),
-                        new Module(DriveConstants.protoModuleConfig, new ModuleIOSim(DriveConstants.protoModuleIOConfig, DriveConstants.protoModuleSimConfig), new EncoderIO() {}, 3)
+                        new Module(new ModuleIOSim(DriveConstants.protoModuleIOConfig, DriveConstants.protoModuleSimConfig), new EncoderIO() {}, 0),
+                        new Module(new ModuleIOSim(DriveConstants.protoModuleIOConfig, DriveConstants.protoModuleSimConfig), new EncoderIO() {}, 1)/*,*/
+                        // new Module(new ModuleIOSim(DriveConstants.protoModuleIOConfig, DriveConstants.protoModuleSimConfig), new EncoderIO() {}, 2),
+                        // new Module(new ModuleIOSim(DriveConstants.protoModuleIOConfig, DriveConstants.protoModuleSimConfig), new EncoderIO() {}, 3)
+                    },
+                    new Camera[] {
+                        new Camera(new CameraIOReal(DriveConstants.protoCameraIOConfig, DriveConstants.protoCameraRealConfig), 0)
                     }
                 );
                 elevator = new Elevator(ElevatorConstants.protoConfig, new ElevatorIOSim(ElevatorConstants.protoIOConfig, ElevatorConstants.protoSimConfig));
@@ -97,24 +105,12 @@ public class RobotContainer {
                 drive
             )
         );
+        controller.b().whileTrue(new RunCommand(() -> drive.setPose(new Pose2d(1, 1, new Rotation2d())), drive));
 
-        // controller.povDown().onTrue(new RunCommand(() -> elevator.setPosition(0.0), elevator));
-        // controller.povLeft().onTrue(new RunCommand(() -> elevator.setPosition(0.4), elevator));
-        // controller.povRight().onTrue(new RunCommand(() -> elevator.setPosition(0.8), elevator));
-        // controller.povUp().onTrue(new RunCommand(() -> elevator.setPosition(1.0), elevator));
-
-        // controller.a().whileTrue(new RunCommand(() -> shooter.setVelocity(1000)));
-
-        elevator.setDefaultCommand(
-            new RunCommand(
-                () -> {
-                    elevator.setPosition(
-                        controller.povUp().getAsBoolean() ? 1.0 : (controller.povLeft().getAsBoolean() ? 0.6 : (controller.povRight().getAsBoolean() ? 0.4 : 0.1))
-                    );
-                },
-                elevator
-            )
-        );
+        elevator.setDefaultCommand(new RunCommand(() -> elevator.setPosition(0.0), elevator));
+        controller.povLeft().whileTrue(new RunCommand(() -> elevator.setPosition(0.4), elevator));
+        controller.povRight().whileTrue(new RunCommand(() -> elevator.setPosition(0.8), elevator));
+        controller.povUp().whileTrue(new RunCommand(() -> elevator.setPosition(1.0), elevator));
 
         roller.setDefaultCommand(
             new RunCommand(

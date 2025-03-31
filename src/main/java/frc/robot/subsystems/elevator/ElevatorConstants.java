@@ -1,14 +1,14 @@
 package frc.robot.subsystems.elevator;
 
+import static frc.robot.Constants.*;
+
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 public class ElevatorConstants {
     public record Config(
-        double s,
-        double g,
-        double v,
-        double a,
+        FeedforwardConfig feedforward,
+        FeedbackConfig feedback,
 
         double maxProfileAcceleration,
         double maxProfileVelocity,
@@ -16,10 +16,6 @@ public class ElevatorConstants {
     ) {}
 
     public record IOConfig(
-        double p,
-        double i,
-        double d,
-
         double radius,
         double gearing,
 
@@ -38,19 +34,23 @@ public class ElevatorConstants {
     ) {}
 
     public static final Config protoConfig = new Config(
-        0.0,
-        0.05283,
-        0.80275,
-        0.02693,
+        new FeedforwardConfig(
+            0.0,
+            0.05283,
+            0.80275,
+            0.02693
+        ),
+        new FeedbackConfig(
+            2.1,
+            0.0,
+            0.0
+        ),
         0.5,
         0.5,
         0.5
     );
 
     public static final IOConfig protoIOConfig = new IOConfig(
-        2.1,
-        0.0,
-        0.0,
         Units.inchesToMeters(0.9125),
         11.25,
         Units.inchesToMeters(44.0),

@@ -1,9 +1,14 @@
 package frc.robot.subsystems.elevator;
 
+import static frc.robot.Constants.*;
 import static frc.robot.subsystems.elevator.ElevatorConstants.*;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkInput;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
+
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.trajectory.ExponentialProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -17,12 +22,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.FeedbackConfig;
+import frc.robot.subsystems.elevator.ElevatorConstants.Config;
 
 public class Elevator extends SubsystemBase {
     private final ElevatorIO io;
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
-    private final ExponentialProfile profile;
+    private ExponentialProfile profile;
     private ExponentialProfile.State profileState = new ExponentialProfile.State(0.0, 0.0);
     private ExponentialProfile.State futureProfileState = new ExponentialProfile.State(0.0, 0.0);
 
@@ -30,11 +37,28 @@ public class Elevator extends SubsystemBase {
 
     private final SysIdRoutine routine;
 
+    private final LoggedNetworkNumber p = new LoggedNetworkNumber("/Tuning/Elevator/P");
+    private final LoggedNetworkNumber i = new LoggedNetworkNumber("/Tuning/Elevator/I");
+    private final LoggedNetworkNumber d = new LoggedNetworkNumber("/Tuning/Elevator/D");
+    private final LoggedNetworkNumber s = new LoggedNetworkNumber("/Tuning/Elevator/S");
+    private final LoggedNetworkNumber g = new LoggedNetworkNumber("/Tuning/Elevator/G");
+    private final LoggedNetworkNumber v = new LoggedNetworkNumber("/Tuning/Elevator/V");
+    private final LoggedNetworkNumber a = new LoggedNetworkNumber("/Tuning/Elevator/A");
+
+    double maxProfileVoltage;
+
     public Elevator(Config config, ElevatorIO io) {
         this.io = io;
 
-        profile = new ExponentialProfile(ExponentialProfile.Constraints.fromCharacteristics(config.maxProfileVoltage() - config.s() - config.g(), config.v(), config.a()));
-        feedforward = new ElevatorFeedforward(config.s(), config.g(), config.v());
+        p.setDefault(config.feedback().p());
+        i.setDefault(config.feedback().i());
+        d.setDefault(config.feedback().d());
+        s.setDefault(config.feedforward().s());
+        g.setDefault(config.feedforward().g());
+        v.setDefault(config.feedforward().v());
+        a.setDefault(config.feedforward().a());
+
+        maxProfileVoltage = config.maxProfileVoltage();
 
         periodic();
 
@@ -47,10 +71,10 @@ public class Elevator extends SubsystemBase {
                 Units.Seconds.of(sysIdTimeout)
             ), 
             new SysIdRoutine.Mechanism(
-                voltage -> io.setPosition(0, voltage.magnitude() / 12.0),
+                voltage -> io.setPosition(0, voltage.magnitude()),
                 log -> {
                     log.motor("elevator")
-                        .voltage(Units.Volts.of(inputs.outputs[0] * 12.0))
+                        .voltage(Units.Volts.of(inputs.voltages[0]))
                         .linearPosition(Units.Meters.of(inputs.position))
                         .linearVelocity(Units.MetersPerSecond.of(inputs.velocity));
                 },
@@ -61,6 +85,11 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void periodic() {
+        io.setFeedback(new FeedbackConfig(p.get(), i.get(), d.get()));
+        feedforward = new ElevatorFeedforward(s.get(), g.get(), v.get());
+        profile = new ExponentialProfile(ExponentialProfile.Constraints.fromCharacteristics(maxProfileVoltage - s.get() - g.get(), v.get(), a.get()));
+
+        
         io.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
     }

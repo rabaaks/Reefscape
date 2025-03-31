@@ -2,6 +2,8 @@ package frc.robot.subsystems.drive;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import frc.robot.Constants.FeedbackConfig;
+
 public interface ModuleIO {
     @AutoLog
     public static class ModuleIOInputs {
@@ -10,9 +12,9 @@ public interface ModuleIO {
         public double turnPosition = 0.0;
         public double turnVelocity = 0.0;
 
-        public double driveOutput = 0.0;
+        public double driveVoltage = 0.0;
         public double driveCurrent = 0.0;
-        public double turnOutput = 0.0;
+        public double turnVoltage = 0.0;
         public double turnCurrent = 0.0;
     }
 
@@ -23,4 +25,8 @@ public interface ModuleIO {
     public default void setTurnPosition(double position, double ffVoltage) {}
 
     public default void resetPosition(double position) {}
+    
+    public default void setDriveFeedback(FeedbackConfig feedbackConfig) {}
+
+    public default void setTurnFeedback(FeedbackConfig feedbackConfig) {}
 }

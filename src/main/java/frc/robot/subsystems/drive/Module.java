@@ -1,8 +1,10 @@
 package frc.robot.subsystems.drive;
 
+import static frc.robot.Constants.*;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,17 +20,15 @@ public class Module {
 
     private final int index;
 
-    private final SimpleMotorFeedforward driveFeedforward;
+    private SimpleMotorFeedforward driveFeedforward;
 
     Rotation2d rawModuleHeading;
 
-    public Module(ModuleConfig config, ModuleIO io, EncoderIO encoderIO, int index) {
+    public Module(ModuleIO io, EncoderIO encoderIO, int index) {
         this.io = io;
         this.encoderIO = encoderIO;
 
         this.index = index;
-
-        driveFeedforward = new SimpleMotorFeedforward(config.driveS(), config.driveV(), config.driveA());
 
         updateInputs();
 
@@ -75,5 +75,16 @@ public class Module {
 
     public Rotation2d getRotation() {
         return new Rotation2d(inputs.turnPosition);
+    }
+
+    public void setConfig(FeedbackConfig driveFeedback, FeedbackConfig turnFeedback, FeedforwardConfig driveFeedforward) {
+        this.driveFeedforward = new SimpleMotorFeedforward(
+            driveFeedforward.s(),
+            driveFeedforward.v(),
+            driveFeedforward.a()
+        );
+
+        io.setDriveFeedback(driveFeedback);
+        io.setTurnFeedback(turnFeedback);
     }
 }

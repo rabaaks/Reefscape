@@ -13,4 +13,17 @@ public class Constants {
         SIM,
         REPLAY
     }
+
+    public record FeedbackConfig(
+        double p,
+        double i,
+        double d
+    ) {}
+
+    public record FeedforwardConfig(
+        double s,
+        double g,
+        double v,
+        double a
+    ) {}
 }
