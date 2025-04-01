@@ -59,11 +59,14 @@ public class RobotContainer {
                     new GyroIOReal(DriveConstants.protoGyroConfig),
                     new Module[] {
                         new Module(new ModuleIOSparkMax(DriveConstants.protoModuleIOConfig, DriveConstants.protoFrontLeftModuleRealConfig), new EncoderIOReal(DriveConstants.protoFrontLeftEncoderRealConfig), 0),
-                        new Module(new ModuleIOSparkMax(DriveConstants.protoModuleIOConfig, DriveConstants.protoFrontRightModuleRealConfig), new EncoderIOReal(DriveConstants.protoFrontRightEncoderRealConfig), 1),
-                        new Module(new ModuleIOSparkMax(DriveConstants.protoModuleIOConfig, DriveConstants.protoBackLeftModuleRealConfig), new EncoderIOReal(DriveConstants.protoBackLeftEncoderRealConfig), 2),
+                        // new Module(new ModuleIOSparkMax(DriveConstants.protoModuleIOConfig, DriveConstants.protoFrontRightModuleRealConfig), new EncoderIOReal(DriveConstants.protoFrontRightEncoderRealConfig), 1),
+                        // new Module(new ModuleIOSparkMax(DriveConstants.protoModuleIOConfig, DriveConstants.protoBackLeftModuleRealConfig), new EncoderIOReal(DriveConstants.protoBackLeftEncoderRealConfig), 2),
                         new Module(new ModuleIOSparkMax(DriveConstants.protoModuleIOConfig, DriveConstants.protoBackRightModuleRealConfig), new EncoderIOReal(DriveConstants.protoBackRightEncoderRealConfig), 3)
                     },
-                    new Camera[] {}
+                    new Camera[] {
+                        new Camera(new CameraIOReal(DriveConstants.protoBackCameraIOConfig, DriveConstants.protoBackCameraRealConfig), 0),
+                        new Camera(new CameraIOReal(DriveConstants.protoFrontCameraIOConfig, DriveConstants.protoFrontCameraRealConfig), 1)
+                    }
                 );
                 elevator = new Elevator(ElevatorConstants.protoConfig, new ElevatorIOSparkMax(ElevatorConstants.protoIOConfig, ElevatorConstants.protoRealConfig));
                 roller = new Roller(RollerConstants.protoConfig, new RollerIOTalonSRX(RollerConstants.protoRealConfig));
@@ -76,12 +79,13 @@ public class RobotContainer {
                     new GyroIO() {},
                     new Module[] {
                         new Module(new ModuleIOSim(DriveConstants.protoModuleIOConfig, DriveConstants.protoModuleSimConfig), new EncoderIO() {}, 0),
-                        new Module(new ModuleIOSim(DriveConstants.protoModuleIOConfig, DriveConstants.protoModuleSimConfig), new EncoderIO() {}, 1)/*,*/
+                        // new Module(new ModuleIOSim(DriveConstants.protoModuleIOConfig, DriveConstants.protoModuleSimConfig), new EncoderIO() {}, 1)/*,*/
                         // new Module(new ModuleIOSim(DriveConstants.protoModuleIOConfig, DriveConstants.protoModuleSimConfig), new EncoderIO() {}, 2),
-                        // new Module(new ModuleIOSim(DriveConstants.protoModuleIOConfig, DriveConstants.protoModuleSimConfig), new EncoderIO() {}, 3)
+                        new Module(new ModuleIOSim(DriveConstants.protoModuleIOConfig, DriveConstants.protoModuleSimConfig), new EncoderIO() {}, 3)
                     },
                     new Camera[] {
-                        new Camera(new CameraIOReal(DriveConstants.protoCameraIOConfig, DriveConstants.protoCameraRealConfig), 0)
+                        new Camera(new CameraIOReal(DriveConstants.protoBackCameraIOConfig, DriveConstants.protoBackCameraRealConfig), 0),
+                        new Camera(new CameraIOReal(DriveConstants.protoFrontCameraIOConfig, DriveConstants.protoFrontCameraRealConfig), 1)
                     }
                 );
                 elevator = new Elevator(ElevatorConstants.protoConfig, new ElevatorIOSim(ElevatorConstants.protoIOConfig, ElevatorConstants.protoSimConfig));
@@ -105,7 +109,8 @@ public class RobotContainer {
                 drive
             )
         );
-        controller.b().whileTrue(new RunCommand(() -> drive.setPose(new Pose2d(1, 1, new Rotation2d())), drive));
+        controller.b().whileTrue(new RunCommand(() -> drive.setPose(new Pose2d(6.3, 2, Rotation2d.fromDegrees(97))), drive));
+        controller.x().whileTrue(new RunCommand(() -> drive.resetGyro(), drive));
 
         elevator.setDefaultCommand(new RunCommand(() -> elevator.setPosition(0.0), elevator));
         controller.povLeft().whileTrue(new RunCommand(() -> elevator.setPosition(0.4), elevator));

@@ -35,19 +35,19 @@ public class ElevatorConstants {
 
     public static final Config protoConfig = new Config(
         new FeedforwardConfig(
-            0.0,
-            0.05283,
-            0.80275,
-            0.02693
+            0.23294,
+            0.083764,
+            9.2729,
+            1.2486
         ),
         new FeedbackConfig(
-            2.1,
+            2.7763,
             0.0,
-            0.0
+            0.54642
         ),
         0.5,
         0.5,
-        0.5
+        12.0
     );
 
     public static final IOConfig protoIOConfig = new IOConfig(

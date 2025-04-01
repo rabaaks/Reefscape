@@ -42,7 +42,7 @@ public class ModuleIOSparkMax implements ModuleIO {
 
         driveConfig
             .inverted(true)
-            .smartCurrentLimit(40)
+            .smartCurrentLimit(60)
             .idleMode(IdleMode.kCoast);
         driveConfig.encoder
             .positionConversionFactor(2.0 * Math.PI * ioConfig.wheelRadius() / ioConfig.driveGearing())

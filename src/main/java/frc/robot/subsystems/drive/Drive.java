@@ -241,4 +241,8 @@ public class Drive extends SubsystemBase {
         }
         return positions;
     }
+
+    public void resetGyro() {
+        gyroIO.reset();
+    }
 }
